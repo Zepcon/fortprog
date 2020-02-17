@@ -14,7 +14,9 @@ instance Pretty Term where
  pretty (Comb "." ((Comb f t):xs)) = "[" ++ prettyList (Comb f t) xs ++ "]"
   where
    prettyList :: Term -> Term - String
-
+     prettyList (Comb f t) (Comb "[]" []) = pretty (Comb f t)
+     prettyList (Comb f t) (Comb "." [a,b]) = pretty (Comb f t) ++ "," ++ prettyList a b
+     prettyList (Comb f t) xs = pretty (Comb f t) ++ "|" ++ pretty xs
 
  pretty (Comb f x) = f ++ "(" ++ (intercalate ", " (map pretty x)) ++ ")"
 
