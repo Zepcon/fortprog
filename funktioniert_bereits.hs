@@ -1,0 +1,11 @@
+-- funktioniert bereits:
+-- *Main> pretty (Var "A")
+-- "A"
+-- *Main> pretty (Comb "true" [])
+-- "true"
+-- *Main> pretty (Comb "f" [Var "B", Var "_", Comb "true" []])
+-- "f(B, _, true)"
+-- *Main> pretty (Comb "." [Var "G"])
+-- ".(G)"
+-- *Main> pretty (Comb "." [Var "H", Comb "true" [], Comb "j" [Var "I"]])
+-- ".(H, true, j(I))"

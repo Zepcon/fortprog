@@ -15,17 +15,7 @@ instance Pretty Term where
  pretty (Comb "." ((Comb f t):xs)) = undefined
  pretty (Comb f x) = f ++ "(" ++ (intercalate ", " (map pretty x)) ++ ")"
 
- -- funktioniert bereits:
- -- *Main> pretty (Var "A")
- -- "A"
- -- *Main> pretty (Comb "true" [])
- -- "true"
- -- *Main> pretty (Comb "f" [Var "B", Var "_", Comb "true" []])
- -- "f(B, _, true)"
- -- *Main> pretty (Comb "." [Var "G"])
- -- ".(G)"
- -- *Main> pretty (Comb "." [Var "H", Comb "true" [], Comb "j" [Var "I"]])
- -- ".(H, true, j(I))"
+
 
  -- zeigt was Falsches an:
 -- *Main> pretty (Comb "." [Comb "true" [], Comb "[]" []])
