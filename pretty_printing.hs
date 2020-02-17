@@ -8,4 +8,4 @@ class Pretty a where
 instance Pretty Term where
  pretty (Var x) = x
  pretty (Comb x []) = x
- pretty (Comb x )
+ pretty (Comb f [Var y]) = f ++ "(" ++ y ++ ")"
