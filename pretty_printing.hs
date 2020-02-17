@@ -1,5 +1,7 @@
 -- Typeclass pretty
-module Pretty where
+import Data.List
+
+--module Pretty where
 
 import Type
 
@@ -9,5 +11,5 @@ class Pretty a where
 instance Pretty Term where
  pretty (Var x) = x
  pretty (Comb x []) = x
- pretty (Comb f [Var y]) = f ++ "(" ++ y ++ ")"
- 
+ -- pretty (Comb "." (x:y)) = undefined
+ pretty (Comb f x) = f ++ "(" ++ (intercalate ", " (map pretty x)) ++ ")"
