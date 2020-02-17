@@ -1,0 +1,60 @@
+ ghci> pretty (Var "A")
+ = "A"
+
+ ghci> pretty (Comb "true" [])
+ = "true" + []
+ = "true"
+
+ ghci> pretty (Comb "f" [Var "B", Var "_", Comb "true" []])
+ = Comb "f" [Var "B", Var "_", Comb "true" []]
+ = Comb "f" [Var "B", Var "_", "true"]
+ = Comb "f" ["B", "_", "true"]
+ = "f(B, _, true)"
+
+ ghci> pretty (Comb "." [Comb "true" [], Comb "[]" []])
+ = (Comb "." [Comb "true" [], Comb "[]" []])
+ = (Comb "." ["true", "[]"])
+ = (Comb "." ["true"])
+ = "[true]"
+
+ ghci> pretty (Comb "." [Comb "true" [], Comb "." [Comb "g" [Var "C"], Comb "[]" []]])
+ = (Comb "." [Comb "true" [], Comb "." [Comb "g" [Var "C"], Comb "[]" []]])
+ = (Comb "." ["true", Comb "." ["g(C)", "[]"]])
+ = (Comb "." ["true", ["g(C)"]])
+ = "[true, g(C)]"
+
+ ghci> pretty (Comb "." [Comb "true" [], Var "D"])
+ = (Comb "." [Comb "true" [], Var "D"])
+ = (Comb "." ["true", "D"])
+ = "[true|D]"
+
+ ghci> pretty (Comb "." [Comb "true" [], Comb "h" [Var "E", Comb "i" [Var "F"]]])
+ = (Comb "." [Comb "true" [], Comb "h" [Var "E", Comb "i" [Var "F"]]])
+ = (Comb "." ["true", Comb "h" [Var "E", Comb "i" ["F"]]])
+ = (Comb "." ["true", Comb "h" ["E", i(F)]])
+ = (Comb "." ["true", h(E, i(F))])
+ = "[true|h(E, i(F))]"
+
+ ghci> pretty (Comb "." [Comb "true" [], Comb "." [Comb "true" [], Comb "true" []]])
+ = (Comb "." [Comb "true" [], Comb "." [Comb "true" [], Comb "true" []]])
+ = (Comb "." ["true", Comb "." ["true", "true"]])
+ = (Comb "." ["true", ["true"|"true"]])
+ = "[true, true|true]"
+
+ ghci> pretty (Comb "." [Comb "." [Comb "true" [], Comb "[]" []], Comb "[]" []])
+ = (Comb "." [Comb "." [Comb "true" [], Comb "[]" []], Comb "[]" []])
+ = (Comb "." [Comb "." ["true"        , "[]"]        , "[]"        ])
+ = (Comb "." [         ["true"              ]        , "[]"        ])
+ = "[[true]]"
+
+ ghci> pretty (Comb "." [Var "G"])
+ = (Comb "." [Var "G"])
+ = (Comb "." ["G"])
+ = ".(G)"
+
+ ghci> pretty (Comb "." [Var "H", Comb "true" [], Comb "j" [Var "I"]])
+ = (Comb "." [Var "H", Comb "true" [], Comb "j" [Var "I"]])
+ = (Comb "." ["H", "true", Comb "j" ["I"]])
+ = (Comb "." ["H", "true", j(I)])
+ = (Comb "." ["H", "true", j(I)])
+ ".(H, true, j(I))"
