@@ -1,4 +1,5 @@
 -- Typeclass pretty
+module Pretty where
 
 import Type
 
@@ -9,3 +10,4 @@ instance Pretty Term where
  pretty (Var x) = x
  pretty (Comb x []) = x
  pretty (Comb f [Var y]) = f ++ "(" ++ y ++ ")"
+ 
