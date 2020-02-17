@@ -18,7 +18,7 @@ instance Pretty Term where
    -- die pretty bei einer leeren Restliste nur auf deren Kopf anwendet
    prettyList (Comb f t) (Comb "[]" []) = pretty (Comb f t)
    -- die pretty nur auf deren Kopf anwendet und für den Spezialfall in der Restliste wiederum prettyList auf diese anwendet
-   prettyList (Comb f t) (Comb "." [a,b]) = pretty (Comb f t) ++ "," ++ prettyList a b
+   prettyList (Comb f t) (Comb "." [a,b]) = pretty (Comb f t) ++ ", " ++ prettyList a b
    -- die pretty auf den Kopf und die Restliste anwendet, wenn die Restliste kein Spezialfall ist
    prettyList (Comb f t) xs = pretty (Comb f t) ++ "|" ++ pretty xs
 -- der Name f wird übernommen, mit map wird pretty auf jedes Termelement angewendet
