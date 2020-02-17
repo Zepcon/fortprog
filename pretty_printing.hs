@@ -1,8 +1,6 @@
--- Typeclass pretty
+module Pretty where
+
 import Data.List
-
---module Pretty where
-
 import Type
 
 class Pretty a where
