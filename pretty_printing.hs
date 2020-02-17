@@ -12,4 +12,5 @@ instance Pretty Term where
  pretty (Var x) = x
  pretty (Comb x []) = x
  -- pretty (Comb "." (x:y)) = undefined
+ pretty (Comb "." ((Comb f t):xs)) = undefined
  pretty (Comb f x) = f ++ "(" ++ (intercalate ", " (map pretty x)) ++ ")"
