@@ -11,11 +11,12 @@ class Pretty a where
 instance Pretty Term where
  pretty (Var x) = x
  pretty (Comb x []) = x
- -- pretty (Comb "." (x:y)) = undefined
- pretty (Comb "." ((Comb f t):xs)) = undefined
+ pretty (Comb "." ((Comb f t):xs)) = "[" ++ prettyList (Comb f t) xs ++ "]"
+  where
+   prettyList :: Term -> Term - String
+
+
  pretty (Comb f x) = f ++ "(" ++ (intercalate ", " (map pretty x)) ++ ")"
-
-
 
  -- zeigt was Falsches an:
 -- *Main> pretty (Comb "." [Comb "true" [], Comb "[]" []])
