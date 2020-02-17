@@ -1,60 +1,76 @@
  ghci> pretty (Var "A")
+ = pretty(Var "A")
  = "A"
 
  ghci> pretty (Comb "true" [])
- = "true" + []
+ = pretty (Comb "true" [])
+ = pretty("true")
  = "true"
 
  ghci> pretty (Comb "f" [Var "B", Var "_", Comb "true" []])
- = Comb "f" [Var "B", Var "_", Comb "true" []]
- = Comb "f" [Var "B", Var "_", "true"]
- = Comb "f" ["B", "_", "true"]
+ = pretty(Comb "f" [Var "B", Var "_", Comb "true" []])
+ = pretty(Comb "f" [Var "B", Var "_", "true"])
+ = pretty(Comb "f" ["B", "_", "true"])
  = "f(B, _, true)"
 
  ghci> pretty (Comb "." [Comb "true" [], Comb "[]" []])
- = (Comb "." [Comb "true" [], Comb "[]" []])
- = (Comb "." ["true", "[]"])
- = (Comb "." ["true"])
+ = pretty(Comb "." [Comb "true" [], Comb "[]" []])
+ = pretty(Comb "." ["true", "[]"])
+ = pretty(["true"])
  = "[true]"
 
  ghci> pretty (Comb "." [Comb "true" [], Comb "." [Comb "g" [Var "C"], Comb "[]" []]])
- = (Comb "." [Comb "true" [], Comb "." [Comb "g" [Var "C"], Comb "[]" []]])
- = (Comb "." ["true", Comb "." ["g(C)", "[]"]])
- = (Comb "." ["true", ["g(C)"]])
+ = pretty (Comb "." [Comb "true" [], Comb "." [Comb "g" [Var "C"], Comb "[]" []]])
+ = pretty (Comb "." ["true", Comb "." [Comb "g" ["C"], "[]"]])
+ = pretty (Comb "." ["true", Comb "." ["g(C)"], "[]"]])
+ = pretty (Comb "." ["true", "g(C)"])
+ = pretty ["true", "g(C)"])
  = "[true, g(C)]"
 
  ghci> pretty (Comb "." [Comb "true" [], Var "D"])
- = (Comb "." [Comb "true" [], Var "D"])
- = (Comb "." ["true", "D"])
+ = pretty (Comb "." [Comb "true" [], Var "D"])
+ = pretty (Comb "." ["true", "D"])
+ = pretty (["true"|"D"])
  = "[true|D]"
 
  ghci> pretty (Comb "." [Comb "true" [], Comb "h" [Var "E", Comb "i" [Var "F"]]])
- = (Comb "." [Comb "true" [], Comb "h" [Var "E", Comb "i" [Var "F"]]])
- = (Comb "." ["true", Comb "h" [Var "E", Comb "i" ["F"]]])
- = (Comb "." ["true", Comb "h" ["E", i(F)]])
- = (Comb "." ["true", h(E, i(F))])
+ = pretty (Comb "." [Comb "true" [], Comb "h" [Var "E", Comb "i" [Var "F"]]])
+ = pretty (Comb "." ["true", Comb "h" ["E", Comb "i" ["F"]]])
+ = pretty (Comb "." ["true", Comb "h" ["E", i(F)]])
+ = pretty (Comb "." ["true", "h(E,i(F))"])
+ = pretty (["true"|"h(E,i(F))"])
  = "[true|h(E, i(F))]"
 
  ghci> pretty (Comb "." [Comb "true" [], Comb "." [Comb "true" [], Comb "true" []]])
- = (Comb "." [Comb "true" [], Comb "." [Comb "true" [], Comb "true" []]])
- = (Comb "." ["true", Comb "." ["true", "true"]])
- = (Comb "." ["true", ["true"|"true"]])
+ = pretty (Comb "." [Comb "true" [], Comb "." [Comb "true" [], Comb "true" []]])
+ = pretty (Comb "." ["true", Comb "." ["true", "true"]])
+ = pretty (Comb "." ["true", ["true"|"true"]])
+ = pretty (["true"|["true","true"]])
+
+(E|L) = .(E,L)
+ [a,b,c]
+ [a|[b,c]]
+ [a,b|[c]]
+
  = "[true, true|true]"
 
  ghci> pretty (Comb "." [Comb "." [Comb "true" [], Comb "[]" []], Comb "[]" []])
- = (Comb "." [Comb "." [Comb "true" [], Comb "[]" []], Comb "[]" []])
- = (Comb "." [Comb "." ["true"        , "[]"]        , "[]"        ])
- = (Comb "." [         ["true"              ]        , "[]"        ])
+ = pretty (Comb "." [Comb "." [Comb "true" [], Comb "[]" []], Comb "[]" []])
+ = pretty (Comb "." [Comb "." ["true", "[]"], "[]"])
+ = pretty (Comb "." [["true"|[]], "[]"])
+ = pretty ([["true"|[]]|[]])
+ = pretty ([["true"|[]]])
  = "[[true]]"
 
  ghci> pretty (Comb "." [Var "G"])
- = (Comb "." [Var "G"])
- = (Comb "." ["G"])
+ = pretty(Comb "." [Var "G"])
+ = pretty(Comb "." ["G"])
  = ".(G)"
 
  ghci> pretty (Comb "." [Var "H", Comb "true" [], Comb "j" [Var "I"]])
- = (Comb "." [Var "H", Comb "true" [], Comb "j" [Var "I"]])
- = (Comb "." ["H", "true", Comb "j" ["I"]])
- = (Comb "." ["H", "true", j(I)])
- = (Comb "." ["H", "true", j(I)])
- ".(H, true, j(I))"
+ = pretty (Comb "." [Var "H", Comb "true" [], Comb "j" [Var "I"]])
+ = pretty (Comb "." ["H", "true", Comb "j" ["I"]])
+ = pretty (Comb "." ["H", "true", j(I)])
+ = pretty (["H"|["true", j(I)]])
+ = pretty (.["H", "true", j(I)])
+ = ".(H, true, j(I))"
