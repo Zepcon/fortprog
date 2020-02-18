@@ -1,4 +1,4 @@
-module Variables where
+module Vars where
 
 import Type
 
@@ -21,3 +21,9 @@ instance Vars Goal where
  -- unendliche Liste
 freshVars :: [VarName]
 freshVars = undefined
+
+{-
+- Variablen beginnen mit einem Großbuchstaben
+- Variablen stehen für beliebige andere Objekte
+- Regeln oder Fakten mit Variablen repräsentieren unendlich viele Regeln
+ -}
