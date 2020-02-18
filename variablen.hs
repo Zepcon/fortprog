@@ -6,7 +6,14 @@ class Vars a where
  allVars :: a -> [VarName]
 
 instance Vars Term where
- allVars = undefined
+ allVars (Var a) = [a]
+ allVars (Comb _ x) = varHelp [] x
+   where
+    varHelp :: [VarName] -> [Term] -> [VarName]
+    varHelp x ([Var a]) = x ++ [a]
+    varHelp x [] = x
+    varHelp x ([Comb _ y]) = x ++ (concat (map allVars y))
+
 
 instance Vars Rule where
  allVars = undefined
