@@ -74,3 +74,10 @@
  = pretty (["H"|["true", j(I)]])
  = pretty (.["H", "true", j(I)])
  = ".(H, true, j(I))"
+
+ ghci> pretty (Comb "." [Var "J", Comb "." [Var "K", Var "L", Var "M", Var"N"]])
+  = pretty (Comb "." [Var "J", Comb "." [Var "K", Var "L", Var "M", Var"N"]])
+  = pretty (Comb "." ["J", Comb "." ["K", "L", "M", "N"]])
+
+
+  "[J|.(K, L, M, N)]"
