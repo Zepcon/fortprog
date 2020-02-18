@@ -10,8 +10,8 @@ instance Vars Term where
  allVars (Comb _ x) = varHelp [] x
    where
     varHelp :: [VarName] -> [Term] -> [VarName]
-    varHelp x [] = x
-    varHelp x (y) = x ++ (concat (map allVars y))
+    varHelp acc [] = acc
+    varHelp acc y = acc ++ (concat (map allVars y))
 
 instance Vars Rule where
  allVars = undefined
