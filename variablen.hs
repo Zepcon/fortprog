@@ -7,6 +7,7 @@ class Vars a where
 
 instance Vars Term where
  allVars (Var a) = [a]
+ allVars (Comb _ []) = []
  allVars (Comb _ x) = varHelp [] x
    where
     varHelp :: [VarName] -> [Term] -> [VarName]
@@ -20,9 +21,9 @@ instance Vars Rule where
   where
    varHelp :: [VarName] -> [Term] -> [Term] -> [VarName]
    varHelp acc [] [] = acc
-   varHelp acc x [] = acc ++ (concat (map allVars x))
-   varHelp acc [] x = acc ++ (concat (map allVars x))
-   varHelp acc x y = acc ++ (concat (map allVars x)) ++ (concat (map allVars y))
+   varHelp acc x1 [] = acc ++ (concat (map allVars x1))
+   varHelp acc [] x1 = acc ++ (concat (map allVars x1))
+   varHelp acc x1 y1 = acc ++ (concat (map allVars x1)) ++ (concat (map allVars y1))
 
 
 instance Vars Prog where
@@ -33,7 +34,6 @@ instance Vars Goal where
  allVars (Goal x) = concat (map allVars x)
 
 
- -- unendliche Liste
 freshVars :: [VarName]
 freshVars = help 0 []
  where
