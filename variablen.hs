@@ -26,24 +26,34 @@ instance Vars Rule where
 
 
 instance Vars Prog where
- allVars Prog [] = []
- allVars Prog  x = varHelp [] x
-  where
-   varHelp :: [VarName] -> [Term] -> [VarName]
-   varHelp acc [] = acc
-   varHelp acc [Rule (Var a) []] = acc ++ [a]
+ allVars (Prog x) = concat (map allVars x)
    
 
 instance Vars Goal where
- allVars = undefined
+ allVars (Goal x) = concat (map allVars x)
 
 
  -- unendliche Liste
 freshVars :: [VarName]
-freshVars = undefined
+freshVars = help 0 []
+ where
+  help :: Int -> [VarName] -> [VarName]
+  help a x = ("A" ++ (show a)) : (help (a+1) x)
 
-{-
-- Variablen beginnen mit einem Großbuchstaben
-- Variablen stehen für beliebige andere Objekte
-- Regeln oder Fakten mit Variablen repräsentieren unendlich viele Regeln
+
+
+{- Test-Beispiele
+
+Term:
+Var "A"
+Comb "F" [Var "B"]
+
+Rule:
+Rule (Comb "." [Comb "true" [], Var "D"]) [(Comb "." [Var "H"]), (Comb "f" [Var "B", Var "_", Comb "true" []])]
+
+Prog:
+Prog [Rule (Comb "." [Comb "true" [], Var "D"]) [(Comb "." [Var "H"]), (Comb "f" [Var "B", Var "_", Comb "true" []])], Rule (Comb "." [Comb "true" [], Var "D"]) [(Comb "." [Var "H"]), (Comb "f" [Var "B", Var "_", Comb "true" []])]]
+
+Goal:
+Goal [(Comb "." [Comb "[]" [], Comb "[]" []]), (Comb "." [Var "H"]), (Comb "." [Var "I", Comb "true" [], Comb "j" [Var "J"]])]
  -}
