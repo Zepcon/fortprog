@@ -15,15 +15,8 @@ instance Vars Term where
     varHelp acc y = acc ++ (concat (map allVars y))
 
 instance Vars Rule where
- allVars (Rule (Var a) []) = [a]
- allVars (Rule (Comb _ []) []) = []
- allVars (Rule (Comb _ x) y) = varHelp [] x y
-  where
-   varHelp :: [VarName] -> [Term] -> [Term] -> [VarName]
-   varHelp acc [] [] = acc
-   varHelp acc x1 [] = acc ++ (concat (map allVars x1))
-   varHelp acc [] x1 = acc ++ (concat (map allVars x1))
-   varHelp acc x1 y1 = acc ++ (concat (map allVars x1)) ++ (concat (map allVars y1))
+ allVars (Rule (Var a) y) = [a] ++ (concat (map allVars y))
+ allVars (Rule (Comb _ x) y) = (concat (map allVars x)) ++ (concat (map allVars y))
 
 
 instance Vars Prog where
