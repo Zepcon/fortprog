@@ -23,6 +23,13 @@ apply (Subst ((x,y):z)) (Var a) = if x == a then y else apply (Subst z) (Var a)
 apply s (Comb a x) = Comb a (map (apply s) x)
 --apply (Subst ((x,y):z)) (Comb _ a) = undefined
 
+-- Komposition von Substitutionen
+compose :: Subst -> Subst -> Subst
+-- apply (compose s2 s1) t == apply s2 (apply s1 t)
+compose s1 (Subst []) = s1
+compose (Subst []) s2 = s2
+compose s1 (Subst s2) = undefined
+
 
 -- Subst example:
 -- Subst [("A",Var "B"), ("C", Var "D")]
