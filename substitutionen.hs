@@ -18,3 +18,7 @@ single x y = Subst [(x,y)]
 
 -- Substitution auf Term anwenden
 apply :: Subst -> Term -> Term
+apply s [] = []
+apply s [Var(a)] = undefined --Subsitution nur auf die Variable anwenden
+apply s (Comb _ []) = []
+apply s (Comb _ x) = undefined --Subsitution nur auf die Variable anwenden
