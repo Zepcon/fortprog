@@ -12,4 +12,9 @@ data Subst = Empty | Subst [(VarName,Term)]
 empty :: Subst
 empty = Empty
 
+-- 1 Variable auf 1 Term
 single :: VarName -> Term -> Subst
+single x y = Subst [(x,y)]
+
+-- Substitution auf Term anwenden
+apply :: Subst -> Term -> Term
