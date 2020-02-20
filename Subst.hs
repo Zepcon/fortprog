@@ -5,6 +5,7 @@ module Subs where
 import Type
 import Pretty
 import Vars
+import Data.List
 
 -- Substitutionen, zugeordnet zu Variablen
 data Subst = Subst [(VarName,Term)]
@@ -79,11 +80,13 @@ restrictTo x a = Subst (restrictHelp [] x a)
 -- Pretty auf den Term, dann Vars mit Termen kombinieren und intercalaten
 instance Pretty Subst where
   pretty (Subst []) = "{ }"
-  pretty (Subst a) = prettyHelp [] a
+  pretty (Subst a) = prettyHelp (Subst a)
    where 
-    prettyHelp :: String -> Subst -> String 
-    prettyHelp acc (Subst []) = acc
-    prettyHelp acc (Subst ((x,y):z)) = 
+    prettyHelp :: Subst -> String 
+    prettyHelp (Subst z) = "{" ++ (intercalate ", " (map prettyTuple z)) ++ "}"
+
+prettyTuple :: (VarName, Term) -> String
+prettyTuple (x,y) = x ++ " -> " ++ (pretty y)
   
 
 {- instance Vars Subst where
