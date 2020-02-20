@@ -1,7 +1,8 @@
 module Unify where
 
 import Type
--- import Subs
+import Subs
+import Vars
 
 -- ds berechnet die Unstimmigkeitsmenge zweier Terme
 -- und gibt sie als Paar zurück
@@ -32,9 +33,22 @@ t3 = (Comb "f" [Var "A", Comb "d" [Var "A", Var "C"]])
 t4 = (Comb "f" [Var "A", Var "a", (Comb "g" [Var "B", Var "", Comb "h" [Var "C", Var "D", Comb "true" []]])])
 t5 = (Comb "f" [Var "A", Var "a", (Comb "g" [Var "B", Var "_", Comb "h" [Var "C", Var "E", Comb "true" []]])])
 
-
+z1 = (Comb "f" [Var "A", Var "a", (Comb "g" [Var "B", Var "_",                                     Comb "h" [Var "C", Var "D", Comb "true" []]])])
+z2 = (Comb "f" [Var "A", Var "a", (Comb "g" [Var "B", Comb "h" [Var "C", Var "E", Comb "true" []], Comb "h" [Var "C", Var "E", Comb "true" []]])])
 
 -- unify bestimmt aufbauend auf ds den allgemeinsten Unifikator für zwei Terme
 -- sofern die beiden Terme unifizierbar sind
 -- sonst: Nothing
---unify :: Term -> Term -> Maybe Subst
+unify :: Term -> Term -> Maybe Subst
+unify t1 t2 = unifyHelp (Subst []) t1 t2
+
+unifyHelp :: Subst -> Term -> Term -> Maybe Subst
+unifyHelp sigma t1 t2 = case (ds (apply sigma t1) (apply sigma t2)) of
+                         Nothing -> Just sigma
+                         Just(Var v,t) -> if not (occur (Var v) t) then unifyHelp (compose((single v t)) sigma) t1 t2 else Nothing
+                         Just(t1,t2) -> Nothing
+
+occur :: Term -> Term -> Bool
+occur (Var a) (Var b) = False
+occur (Var a) x =  (elem a (allVars x))
+

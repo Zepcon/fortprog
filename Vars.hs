@@ -35,6 +35,10 @@ instance Vars Prog where
 instance Vars Goal where
  allVars (Goal x) = concat (map allVars x)
 
+
+instance Vars a => Vars [a] where
+  allVars a = concat (map allVars a)
+
 -- erzeugt eine unendliche Liste von gültigen Prolog-Variablen
 freshVars :: [VarName]
 freshVars = help 0 []
