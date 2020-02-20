@@ -24,11 +24,9 @@ apply :: Subst -> Term -> Term
 apply (Subst []) a = a
 apply (Subst ((x,y):z)) (Var a) = if x == a then y else apply (Subst z) (Var a)
 apply s (Comb a x) = Comb a (map (apply s) x)
---apply (Subst ((x,y):z)) (Comb _ a) = undefined
 
 -- Komposition von Substitutionen
 compose :: Subst -> Subst -> Subst
--- apply (compose s2 s1) t == apply s2 (apply s1 t)
 compose s2 (Subst []) = s2
 compose (Subst []) s1 = s1
 compose (Subst s2) (Subst s1) = memberHelp (Subst s2) (Subst (map help s1))
