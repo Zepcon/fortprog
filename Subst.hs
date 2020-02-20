@@ -48,6 +48,19 @@ varMember :: VarName -> Subst -> Bool
 varMember _ (Subst []) = False
 varMember a (Subst ((x,y):z)) = if a == x then True else (varMember a (Subst z))
 
+-- Wenn Variable drin, gib das Tupel zurück
+giveTuple :: VarName -> Subst -> (VarName, Term)
+giveTuple a (Subst ((x,y):z)) = if a == x then (x,y) else (giveTuple a (Subst z))
+
+-- Substitution auf Variablen einschränken
+restrictTo :: [VarName] -> Subst -> Subst
+restrictTo [] a = a
+restrictTo x a = Subst (restrictHelp [] x a)
+ where
+  restrictHelp :: [(VarName,Term)] -> [VarName] -> Subst -> [(VarName,Term)]
+  restrictHelp acc [] x = acc
+  restrictHelp acc (a:as) x = if (varMember a x) then (restrictHelp ((giveTuple a x):acc) as x) else (restrictHelp acc as x)
+
 -- Compose Beispiele
 -- (compose (single "A" (Var "B")) (single "A" (Var "C")))
 -- (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
