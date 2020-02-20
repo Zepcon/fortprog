@@ -30,10 +30,36 @@ compose :: Subst -> Subst -> Subst
 -- apply (compose s2 s1) t == apply s2 (apply s1 t)
 compose s2 (Subst []) = s2
 compose (Subst []) s1 = s1
-compose (Subst s2) (Subst s1) = Subst (map help s1)
+compose (Subst s2) (Subst s1) = memberHelp (Subst s2) (Subst (map help s1))
  where
   help :: (VarName, Term) -> (VarName, Term)
   help (v,t) = (v, apply (Subst s2) t)
+
+memberHelp :: Subst -> Subst -> Subst
+memberHelp (Subst []) a = a
+memberHelp a (Subst []) = a
+memberHelp (Subst ((x,y):z)) (Subst b) = if not (varMember x (Subst b)) 
+                                          then (memberHelp (Subst z) (Subst (b ++ [(x,y)]))) 
+                                          else (memberHelp (Subst z) (Subst b))
+
+varMember :: VarName -> Subst -> Bool
+varMember _ (Subst []) = False
+varMember a (Subst ((x,y):z)) = if a == x then True else (varMember a (Subst z))
+
+-- Compose Beispiele
+-- (compose (single "A" (Var "B")) (single "A" (Var "C")))
+-- (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
+-- (compose (single "G" (Var "H")) (single "I" (Var "J")))
+
+-- Subst example:
+-- Subst [("A",Var "B"), ("C", Var "D")]
+-- Subst [("A",Var "B"), ("C", Comb "." [Comb "true" [], Comb "." [Comb "g" [Var "C"], Comb "[]" []]])]
+
+-- Term example:
+-- Var "A"
+-- Comb "." [Var "B"]
+-- (Comb "." [Var "K", Comb "." [Var "L", Var "M", Var "N", Var "O"]])
+-- (Comb "." [Var "E", Comb "h" [Var "F", Comb "i" [Var "G"]]])
 
 
 instance Pretty Subst where
