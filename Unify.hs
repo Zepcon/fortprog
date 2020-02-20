@@ -14,7 +14,7 @@ ds :: Term -> Term -> Maybe (Term, Term)
 
 
 
--- unify bestimmt aufbauend auf ds den allgemeinsten Unifikator für zwei
+-- unify bestimmt aufbauend auf ds den allgemeinsten Unifikator für zwei Terme
 -- sofern die beiden Terme unifizierbar sind
 -- sonst: Nothing
 unify :: Term -> Term -> Maybe Subst
