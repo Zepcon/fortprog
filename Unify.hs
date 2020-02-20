@@ -9,14 +9,20 @@ import Type
 -- ?! Umgang mit anonymen Variablen (_)
 
 ds :: Term -> Term -> Maybe (Term, Term)
-
+ds _ t = Nothing
+ds t _ = Nothing
 ds (Var v1) (Var v2) = if v1 == v2 then Nothing
-                                   else Just(v1,v2)
-ds (Comb combName xs1) (Comb combName2 xs2) | length xs1 != length xs2 = Just((Comb combName xs1),(Comb combName2 xs2))
-                                            | combName != combName2 = Just((Comb combName xs1),(Comb combName2 xs2))
-                                            | otherwise --kleinster Index mit nicht-Nothing
+                                    else Just(Var v1, Var v2)
+ds (Comb combName xs1) (Comb combName2 xs2) | length xs1 /= length xs2 = Just((Comb combName xs1),(Comb combName2 xs2))
+                                            | combName /= combName2 = Just((Comb combName xs1),(Comb combName2 xs2))
+                                            | otherwise = dsHelp xs1 xs2
 ds t1 t2 = Just(t1,t2)
 
+dsHelp :: [Term] -> [Term] -> Maybe (Term, Term)
+dsHelp [] [] = Nothing
+dsHelp (x1:xs1) (y1:ys1) = case ds x1 y1 of
+                            Nothing -> dsHelp xs1 ys1
+                            Just (x1,y2) -> Just (x1,y2)
 
 -- data Term = Var VarName | Comb CombName [Term]
 -- 1. Fall: t = t'
