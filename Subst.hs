@@ -3,6 +3,8 @@ module Subs where
 {- Subsitution: Ordnet jeder Variablen einen Term zu -}
 
 import Type
+import Pretty
+import Vars
 
 -- Substitutionen, zugeordnet zu Variablen
 data Subst = Subst [(VarName,Term)]
@@ -33,6 +35,21 @@ compose (Subst s2) (Subst s1) = Subst (map help s1)
   help :: (VarName, Term) -> (VarName, Term)
   help (v,t) = (v, apply (Subst s2) t)
 
+
+instance Pretty Subst where
+  -- data Subst = Subst [(VarName,Term)]
+  pretty (Subst []) = []
+  pretty (Subst s) = undefined
+
+   -- ghci> pretty (compose (single "A" (Var "B")) (single "A" (Var "C")))
+   -- "{A -> C}"
+   -- ghci> pretty (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
+   -- "{F -> f(E, true), D -> E}"
+   -- ghci> pretty (compose (single "G" (Var "H")) (single "I" (Var "J")))
+   -- "{I -> J, G -> H}"
+
+
+-- Subst [("A",Var "C")]
 
 
 -- Subst example:

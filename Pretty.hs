@@ -1,4 +1,4 @@
-module Pretty where
+module Pretty(Pretty(..)) where
 
 import Data.List
 import Type
