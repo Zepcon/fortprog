@@ -28,23 +28,9 @@ dsHelp (x1:xs1) (y1:ys1) = case ds x1 y1 of
 -- 1. Fall: t = t'
 -- Problem: Gleichheit von Termen überprüfen
 
--- 2. Fall: t oder t' Variablen und t != t'
--- ds(t; t') = {t;t'}
-
 -- 3. Fall: t = f(t1;...; tn) und t' = g(s1;...; sm) und (n;m >= 0)
--- 3.1: f != g oder m != n
--- ds(t; t') = {t;t'}
 -- 3.2: f = g und m = n und ti = si für alle i < k und tk != sk
 -- ds(t; t') = ds(tk; sk)
-
-
--- Sind t; t0 Terme, dann ist ds(t; t0) definiert durch
--- 1. Falls t = t': ds(t; t') = Nothing;
--- 2. Falls t oder t' Variable und t != t': ds(t; t') = {t;t'}
--- 3. Falls t = f(t1;...; tn) und t' = g(s1;...; sm) und (n;m >= 0):
---     Falls f != g oder m != n: ds(t; t') = {t;t'}
---     Falls f = g und m = n und ti = si für alle i < k und tk != sk: ds(t; t') =
---            ds(tk; sk)
 -- Intuitiv bedeutet diese Definition: ds(t; t') enthält die Teilterme von t und t' an der
 -- linkesten innersten Position, an denen t und t' verschieden sind.
 
