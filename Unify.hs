@@ -6,7 +6,7 @@ import Subs
 -- ds berechnet die Unstimmigkeitsmenge zweier Terme
 -- und gibt sie als Paar zurück
 -- Unstimmigkeitsmenge leer: Nothing zurückgeben
--- Umgang mit anonymen Variablen (_)
+-- ?! Umgang mit anonymen Variablen (_)
 
 ds :: Term -> Term -> Maybe (Term, Term)
 
