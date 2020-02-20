@@ -76,25 +76,17 @@ restrictTo x a = Subst (restrictHelp [] x a)
 -- (Comb "." [Var "K", Comb "." [Var "L", Var "M", Var "N", Var "O"]])
 -- (Comb "." [Var "E", Comb "h" [Var "F", Comb "i" [Var "G"]]])
 
+-- Pretty auf den Term, dann Vars mit Termen kombinieren und intercalaten
+instance Pretty Subst where
+  pretty (Subst []) = "{ }"
+  pretty (Subst a) = prettyHelp [] a
+   where 
+    prettyHelp :: String -> Subst -> String 
+    prettyHelp acc (Subst []) = acc
+    prettyHelp acc (Subst ((x,y):z)) = 
+  
 
--- instance Pretty Subst where
---   --data Subst = Subst [(VarName,Term)]
---   pretty (Subst []) = []
---   pretty (Subst s) = "{" ++ prettySubst s ++ "}"
---
---    prettySubst :: Subst -> String
---    prettySubst s = undefined
-
-   -- ghci> pretty (compose (single "A" (Var "B")) (single "A" (Var "C")))
-   -- Subst [("A",Var "C")]
-   -- "{A -> C}"
-   --
-   -- ghci> pretty (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
-   -- "{F -> f(E, true), D -> E}"
-   -- ghci> pretty (compose (single "G" (Var "H")) (single "I" (Var "J")))
-   -- "{I -> J, G -> H}"
-
-instance Vars Subst where
+{- instance Vars Subst where
 --data Subst = Subst [(VarName,Term)]
 allVars (Subst []) = []
 allVars (Subst ((_,y):[])) = map Vars.allVars [y]
@@ -103,7 +95,7 @@ allVars (Subst ((x,y):z)) = (map Vars.allVars [y]) ++ varHelp [] z
     varHelp :: Vars a => [[VarName]] -> a -> [[VarName]]
   --  varHelp acc [] = acc
 
-    varHelp acc z = acc ++ (concat(map Vars.allVars [z]))
+    varHelp acc z = acc ++ (concat(map Vars.allVars [z])) -}
 
 
 -- Subst example:
