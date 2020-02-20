@@ -9,8 +9,8 @@ import Type
 -- ?! Umgang mit anonymen Variablen (_)
 
 ds :: Term -> Term -> Maybe (Term, Term)
-ds _ t = Nothing
-ds t _ = Nothing
+ds (Var "_") (Var v2) = Nothing
+ds (Var v1) (Var "_") = Nothing
 ds (Var v1) (Var v2) = if v1 == v2 then Nothing
                                     else Just(Var v1, Var v2)
 ds (Comb combName xs1) (Comb combName2 xs2) | length xs1 /= length xs2 = Just((Comb combName xs1),(Comb combName2 xs2))
