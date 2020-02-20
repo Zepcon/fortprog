@@ -35,6 +35,7 @@ compose (Subst s2) (Subst s1) = memberHelp (Subst s2) (Subst (map help s1))
   help :: (VarName, Term) -> (VarName, Term)
   help (v,t) = (v, apply (Subst s2) t)
 
+-- Übertrage Tupel von einer Substitution in eine andere
 memberHelp :: Subst -> Subst -> Subst
 memberHelp (Subst []) a = a
 memberHelp a (Subst []) = a
@@ -42,6 +43,7 @@ memberHelp (Subst ((x,y):z)) (Subst b) = if not (varMember x (Subst b))
                                           then (memberHelp (Subst z) (Subst (b ++ [(x,y)]))) 
                                           else (memberHelp (Subst z) (Subst b))
 
+-- Checken ob Tupel Variable bereits in anderer Substitution vorkommt
 varMember :: VarName -> Subst -> Bool
 varMember _ (Subst []) = False
 varMember a (Subst ((x,y):z)) = if a == x then True else (varMember a (Subst z))
