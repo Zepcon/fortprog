@@ -9,6 +9,15 @@ import Type
 -- ?! Umgang mit anonymen Variablen (_)
 
 ds :: Term -> Term -> Maybe (Term, Term)
+
+ds (Var v1) (Var v2) = if v1 == v2 then Nothing
+                                   else Just(v1,v2)
+ds (Comb combName xs1) (Comb combName2 xs2) | length xs1 != length xs2 = Just((Comb combName xs1),(Comb combName2 xs2))
+                                            | combName != combName2 = Just((Comb combName xs1),(Comb combName2 xs2))
+                                            | otherwise --kleinster Index mit nicht-Nothing
+ds t1 t2 = Just(t1,t2)
+
+
 -- data Term = Var VarName | Comb CombName [Term]
 -- 1. Fall: t = t'
 -- Problem: Gleichheit von Termen überprüfen
@@ -22,9 +31,6 @@ ds :: Term -> Term -> Maybe (Term, Term)
 -- 3.2: f = g und m = n und ti = si für alle i < k und tk != sk
 -- ds(t; t') = ds(tk; sk)
 
-
-ds (Var v1) (Var v2) = if v1 == v2 then Nothing
-           --           else undefined
 
 -- Sind t; t0 Terme, dann ist ds(t; t0) definiert durch
 -- 1. Falls t = t': ds(t; t') = Nothing;
