@@ -28,10 +28,12 @@ compose :: Subst -> Subst -> Subst
 -- apply (compose s2 s1) t == apply s2 (apply s1 t)
 compose s2 (Subst []) = s2
 compose (Subst []) s1 = s1
-compose (Subst s2) (Subst s1) = apply (Subst s2) (map help s1)
+compose (Subst s2) (Subst s1) = Subst (map help s1)
  where
   help :: (VarName, Term) -> (VarName, Term)
-  help (v,t) = (v, apply s2 t)
+  help (v,t) = (v, apply (Subst s2) t)
+
+
 
 -- Subst example:
 -- Subst [("A",Var "B"), ("C", Var "D")]
