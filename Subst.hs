@@ -79,24 +79,22 @@ restrictTo x a = Subst (restrictHelp [] x a)
 instance Pretty Subst where
   pretty (Subst []) = "{ }"
   pretty (Subst a) = prettyHelp (Subst a)
-   where 
-    prettyHelp :: Subst -> String 
+   where
+    prettyHelp :: Subst -> String
     prettyHelp (Subst z) = "{" ++ (intercalate ", " (map prettyTuple z)) ++ "}"
 
 prettyTuple :: (VarName, Term) -> String
 prettyTuple (x,y) = x ++ " -> " ++ (pretty y)
-  
 
-{- instance Vars Subst where
+
+instance Vars Subst where
 --data Subst = Subst [(VarName,Term)]
 allVars (Subst []) = []
 allVars (Subst ((_,y):[])) = map Vars.allVars [y]
-allVars (Subst ((x,y):z)) = (map Vars.allVars [y]) ++ varHelp [] z
+allVars (Subst ((x,y):z)) = (map Vars.allVars [y]) ++ varHelp [] (Subst z)
   where
-    varHelp :: Vars a => [[VarName]] -> a -> [[VarName]]
-  --  varHelp acc [] = acc
-
-    varHelp acc z = acc ++ (concat(map Vars.allVars [z])) -}
+    varHelp acc (Subst []) = acc
+    varHelp acc z = acc ++ (map Vars.allVars [z])
 
 
 -- Subst example:
