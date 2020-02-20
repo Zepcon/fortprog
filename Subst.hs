@@ -39,17 +39,21 @@ compose (Subst s2) (Subst s1) = Subst (map help s1)
 instance Pretty Subst where
   -- data Subst = Subst [(VarName,Term)]
   pretty (Subst []) = []
-  pretty (Subst s) = undefined
+  pretty (Subst s) = "{" ++ prettySubst s ++ "}"
+
+    prettySubst :: Subst -> String
+    prettySubst s =
 
    -- ghci> pretty (compose (single "A" (Var "B")) (single "A" (Var "C")))
+   -- Subst [("A",Var "C")]
    -- "{A -> C}"
+
    -- ghci> pretty (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
    -- "{F -> f(E, true), D -> E}"
    -- ghci> pretty (compose (single "G" (Var "H")) (single "I" (Var "J")))
    -- "{I -> J, G -> H}"
 
 
--- Subst [("A",Var "C")]
 
 
 -- Subst example:
