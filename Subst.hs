@@ -23,11 +23,9 @@ apply :: Subst -> Term -> Term
 apply (Subst []) a = a
 apply (Subst ((x,y):z)) (Var a) = if x == a then y else apply (Subst z) (Var a)
 apply s (Comb a x) = Comb a (map (apply s) x)
---apply (Subst ((x,y):z)) (Comb _ a) = undefined
 
 -- Komposition von Substitutionen
 compose :: Subst -> Subst -> Subst
--- apply (compose s2 s1) t == apply s2 (apply s1 t)
 compose s2 (Subst []) = s2
 compose (Subst []) s1 = s1
 compose (Subst s2) (Subst s1) = memberHelp (Subst s2) (Subst (map help s1))
@@ -78,32 +76,42 @@ restrictTo x a = Subst (restrictHelp [] x a)
 
 
 -- instance Pretty Subst where
---   --data Subst = Subst [(VarName,Term)]
---   pretty (Subst []) = []
+-- --   --data Subst = Subst [(VarName,Term)]
+--   pretty (Subst []) = "{ }"
 --   pretty (Subst s) = "{" ++ prettySubst s ++ "}"
 --
 --    prettySubst :: Subst -> String
 --    prettySubst s = undefined
+--
+   -- pretty (Comb "f" [Var "D", Comb "true" []])
+   -- "f(D, true)"
+
 
    -- ghci> pretty (compose (single "A" (Var "B")) (single "A" (Var "C")))
    -- Subst [("A",Var "C")]
    -- "{A -> C}"
    --
+
+   -- (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
+   -- Subst [("F",Comb "f" [Var "E",Comb "true" []]),("D",Var "E")]
+
    -- ghci> pretty (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
    -- "{F -> f(E, true), D -> E}"
+
+
    -- ghci> pretty (compose (single "G" (Var "H")) (single "I" (Var "J")))
    -- "{I -> J, G -> H}"
 
-instance Vars Subst where
---data Subst = Subst [(VarName,Term)]
-allVars (Subst []) = []
-allVars (Subst ((_,y):[])) = map Vars.allVars [y]
-allVars (Subst ((x,y):z)) = (map Vars.allVars [y]) ++ varHelp [] z
-  where
-    varHelp :: Vars a => [[VarName]] -> a -> [[VarName]]
-  --  varHelp acc [] = acc
-
-    varHelp acc z = acc ++ (concat(map Vars.allVars [z]))
+-- instance Vars Subst where
+-- --data Subst = Subst [(VarName,Term)]
+-- allVars (Subst []) = []
+-- allVars (Subst ((_,y):[])) = map Vars.allVars [y]
+-- allVars (Subst ((x,y):z)) = (map Vars.allVars [y]) ++ varHelp [] z
+--   where
+--     varHelp :: Vars a => [[VarName]] -> a -> [[VarName]]
+--   --  varHelp acc [] = acc
+--
+--     varHelp acc z = acc ++ (concat(map Vars.allVars [z]))
 
 
 -- Subst example:
