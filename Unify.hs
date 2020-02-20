@@ -24,15 +24,13 @@ dsHelp (x1:xs1) (y1:ys1) = case ds x1 y1 of
                             Nothing -> dsHelp xs1 ys1
                             Just (x1,y2) -> Just (x1,y2)
 
--- data Term = Var VarName | Comb CombName [Term]
--- 1. Fall: t = t'
--- Problem: Gleichheit von Termen überprüfen
 
--- 3. Fall: t = f(t1;...; tn) und t' = g(s1;...; sm) und (n;m >= 0)
--- 3.2: f = g und m = n und ti = si für alle i < k und tk != sk
--- ds(t; t') = ds(tk; sk)
--- Intuitiv bedeutet diese Definition: ds(t; t') enthält die Teilterme von t und t' an der
--- linkesten innersten Position, an denen t und t' verschieden sind.
+v1 = (Var "A")
+t1 = (Comb "f" [Var "A", Var "B", Var ""])
+t2 = (Comb "f" [Var "A", Comb "e" [Var "A", Var "X"]])
+t3 = (Comb "f" [Var "A", Comb "d" [Var "A", Var "C"]])
+t4 = (Comb "f" [Var "A", Var "a", (Comb "g" [Var "B", Var "", Comb "h" [Var "C", Var "D", Comb "true" []]])])
+t5 = (Comb "f" [Var "A", Var "a", (Comb "g" [Var "B", Var "_", Comb "h" [Var "C", Var "E", Comb "true" []]])])
 
 
 
