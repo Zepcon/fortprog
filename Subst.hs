@@ -39,8 +39,8 @@ compose (Subst s2) (Subst s1) = memberHelp (Subst s2) (Subst (map help s1))
 memberHelp :: Subst -> Subst -> Subst
 memberHelp (Subst []) a = a
 memberHelp a (Subst []) = a
-memberHelp (Subst ((x,y):z)) (Subst b) = if not (varMember x (Subst b)) 
-                                          then (memberHelp (Subst z) (Subst (b ++ [(x,y)]))) 
+memberHelp (Subst ((x,y):z)) (Subst b) = if not (varMember x (Subst b))
+                                          then (memberHelp (Subst z) (Subst (b ++ [(x,y)])))
                                           else (memberHelp (Subst z) (Subst b))
 
 -- Checken ob Tupel Variable bereits in anderer Substitution vorkommt
@@ -64,24 +64,33 @@ varMember a (Subst ((x,y):z)) = if a == x then True else (varMember a (Subst z))
 -- (Comb "." [Var "E", Comb "h" [Var "F", Comb "i" [Var "G"]]])
 
 
-instance Pretty Subst where
-  -- data Subst = Subst [(VarName,Term)]
-  pretty (Subst []) = []
-  pretty (Subst s) = "{" ++ prettySubst s ++ "}"
-
-    prettySubst :: Subst -> String
-    prettySubst s =
+-- instance Pretty Subst where
+--   --data Subst = Subst [(VarName,Term)]
+--   pretty (Subst []) = []
+--   pretty (Subst s) = "{" ++ prettySubst s ++ "}"
+--
+--    prettySubst :: Subst -> String
+--    prettySubst s = undefined
 
    -- ghci> pretty (compose (single "A" (Var "B")) (single "A" (Var "C")))
    -- Subst [("A",Var "C")]
    -- "{A -> C}"
-
+   --
    -- ghci> pretty (compose (single "D" (Var "E")) (single "F" (Comb "f" [Var "D", Comb "true" []])))
    -- "{F -> f(E, true), D -> E}"
    -- ghci> pretty (compose (single "G" (Var "H")) (single "I" (Var "J")))
    -- "{I -> J, G -> H}"
 
+instance Vars Subst where
+--data Subst = Subst [(VarName,Term)]
+allVars (Subst []) = []
+allVars (Subst ((_,y):[])) = map Vars.allVars [y]
+allVars (Subst ((x,y):z)) = (map Vars.allVars [y]) ++ varHelp [] z
+  where
+    varHelp :: Vars a => [[VarName]] -> a -> [[VarName]]
+  --  varHelp acc [] = acc
 
+    varHelp acc z = acc ++ (concat(map Vars.allVars [z]))
 
 
 -- Subst example:
