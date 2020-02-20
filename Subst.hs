@@ -87,14 +87,15 @@ prettyTuple :: (VarName, Term) -> String
 prettyTuple (x,y) = x ++ " -> " ++ (pretty y)
 
 
-instance Vars Subst where
---data Subst = Subst [(VarName,Term)]
-allVars (Subst []) = []
-allVars (Subst ((_,y):[])) = map Vars.allVars [y]
-allVars (Subst ((x,y):z)) = (map Vars.allVars [y]) ++ varHelp [] (Subst z)
-  where
-    varHelp acc (Subst []) = acc
-    varHelp acc z = acc ++ (map Vars.allVars [z])
+-- instance for all Variables
+instance Vars Subst
+ where
+  allVars (Subst []) = [""]
+  allVars (Subst ((x,y):xs)) =  x : allVars y ++ helpVars xs
+   where
+    helpVars [] = []
+    helpVars [(x2,y2)] = x2 : allVars y2
+    helpVars ((x2,y2):xs) = x2 : allVars y2 ++ helpVars xs
 
 
 -- Subst example:
