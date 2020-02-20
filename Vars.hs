@@ -5,10 +5,9 @@ import Type
 class Vars a where
  allVars :: a -> [VarName]
 
--- Variablen von Termen ausgeben
+-- Enthaltene Variablen von Termen ausgeben
 instance Vars Term where
-  -- Variablen werden als Liste von Variablen ausgegeben
- allVars (Var a) = [a]
+ allVars (Var a) = [a] -- nur eine Variable
  allVars (Comb _ []) = []
  -- ist der Term von Comb nicht leer, wird mithilfe der varHelp-Hilfsfunktion
  -- allVars auf alle Elemente der Termliste gemappt
@@ -20,11 +19,9 @@ instance Vars Term where
 
 -- Variablen von Regeln ausgeben
 instance Vars Rule where
- -- bei einem nicht leeren Term wird allVars wieder auf alle
- -- Elemente der Termliste gemappt
- -- Variablen werden als Liste zurückgegeben und mit der gemappten Liste konkateniert
+ -- Variable wird mit der gemappten Liste konkateniert
  allVars (Rule (Var a) y) = [a] ++ (concat (map allVars y))
- -- beim Comb Term wird wieder allVars auf alle Termlistenelemente gemappt
+ -- beim Comb Term wird wieder allVars auf alle Termlistenelemente gemappt und konkateniert
  allVars (Rule (Comb _ x) y) = (concat (map allVars x)) ++ (concat (map allVars y))
 
 -- Variablen von Programmen ausgeben
@@ -35,7 +32,7 @@ instance Vars Prog where
 instance Vars Goal where
  allVars (Goal x) = concat (map allVars x)
 
-
+-- allVars für Listen (in Unify benötigt)
 instance Vars a => Vars [a] where
   allVars a = concat (map allVars a)
 
@@ -43,6 +40,7 @@ instance Vars a => Vars [a] where
 freshVars :: [VarName]
 freshVars = help 0 []
  where
+  -- Momentanen counter hinter das A hängen für neue Variable
   help :: Int -> [VarName] -> [VarName]
   help a x = ("A" ++ (show a)) : (help (a+1) x)
 
