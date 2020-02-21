@@ -15,7 +15,7 @@ instance Pretty Term where
    prettyList :: Term -> Term -> String
    prettyList a1 (Comb "[]" []) = pretty a1
    prettyList a1 (Comb "." [c,d]) = pretty a1 ++ ", " ++ prettyList c d  -- Komma Separierung
-   prettyList a1 b1 = pretty a1 ++ "|" ++ pretty b1  -- Separierung mit Pipe
+   prettyList a1 b1 = pretty a1 ++ "| " ++ pretty b1  -- Separierung mit Pipe
  pretty (Comb f x) = f ++ "(" ++ (intercalate ", " (map pretty x)) ++ ")" -- Name von f wird behalten, map über Liste mit anschließender Separierung mit Klammern
 
 

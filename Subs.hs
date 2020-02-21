@@ -43,6 +43,8 @@ memberHelp (Subst ((x,y):z)) (Subst b) = if not (varMember x (Subst b))  -- Chec
                                           else (memberHelp (Subst z) (Subst b))  -- wenn schon drin, alles gucci
 
 -- Checken ob Tupel Variable bereits in anderer Substitution vorkommt
+-- lookup Funktion verwenden
+-- Maybe und Nothing verwenden
 varMember :: VarName -> Subst -> Bool
 varMember _ (Subst []) = False
 varMember a (Subst ((x,_):z)) = if a == x 

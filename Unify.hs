@@ -18,6 +18,7 @@ ds (Comb combName xs1) (Comb combName2 xs2) | length xs1 /= length xs2 = Just((C
 ds t1 t2 = Just(t1,t2)  -- Letzte Möglichkeit entspricht ds
 
 -- checke für Termlisten ob diese ds bilden könnten
+-- zipwith, find, msum
 dsHelp :: [Term] -> [Term] -> Maybe (Term, Term)
 dsHelp _ [] = Nothing
 dsHelp [] _ = Nothing
@@ -43,6 +44,7 @@ unify :: Term -> Term -> Maybe Subst
 unify t1 t2 = unifyHelp (Subst []) t1 t2
 
 -- Hilfe um Substitution zu bauen
+-- Variable und Term auch in anderer Reihenfolge ergänzen
 unifyHelp :: Subst -> Term -> Term -> Maybe Subst
 unifyHelp sigma t1 t2 = case (ds (apply sigma t1) (apply sigma t2)) of  -- Bilden von ds nach Anwendung von Substitutionen
                          Nothing -> Just sigma  -- Substitution gefunden
