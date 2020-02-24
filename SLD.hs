@@ -16,28 +16,20 @@ sld (Prog rs) g = let rs' = map (\x -> rename x (allVars g)) rs  -- Renamed Rule
                       mps = map (\r -> helper r g) rs'  -- Maybe Pairs
                       fmps = filter (isJust) mps  -- filtered Maybe Pairs
                       fps = helper2 fmps  -- filtered pairs
-                      tl = map (\(x,y) -> (x, sld (Prog rs) y)) fps -- tree List
-                  in SLDTree g tl
+                      tl = map (\(x,y) -> (x, sld (Prog rs) y)) fps  -- tree List
+                  in SLDTree g tl  -- alles zusammenbauen
 
-
+-- Mache aus dem Maybe eine normale Tupel Liste
 helper2 :: [Maybe (Subst,Goal)] -> [(Subst, Goal)]
 helper2 [] = []
 helper2 (Nothing:xs) = [] ++ helper2 (xs)
 helper2 (Just (x,y):xs) = [(x,y)] ++ (helper2 xs)
 
+-- Unfizieren von Rule und Goal
 helper :: Rule -> Goal -> Maybe (Subst,Goal)
 helper (Rule t ts) (Goal (g:gs)) = case unify t g of
-                                    Nothing -> Nothing
-                                    Just s  -> Just(s, Goal (map (apply s) (ts ++ gs)))
-
-
--- Regelkopf mit Literal unifizieren
-   -- wenn es geht, also wenn man einen Unifikator findet, dann fügt man es als Kind hinzu
-
--- neuer Resolutionsschritt dann für den Rest von dem Goal
-   -- Dabei Unifikator von dem Vorherigen auf alles anwenden, also auf die ganze Anfrage
-
--- später dann Aus der Liste von Maybe Subst weiter filtern (Nothing taucht im Baum nicht auf)
+                                    Nothing -> Nothing  -- Kein Unfikator gefunden
+                                    Just s  -> Just (s, Goal (map (apply s) (ts ++ gs)))  -- Unfikator auf restliche Regl und Goal zusammen anwenden
 
 
 -- konstruiert den SLD-Baum zu einem Programm und einer Anfrage mittels FIRST
