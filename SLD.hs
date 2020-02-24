@@ -12,26 +12,22 @@ sld :: Prog -> Goal -> SLDTree
 sld (Prog []) (Goal []) = SLDTree (Goal []) []
 sld (Prog _) (Goal []) = SLDTree (Goal []) []
 sld (Prog []) (Goal x) = SLDTree (Goal x) []
-sld (Prog rs) (Goal g) =let rs' = map rename rs
-                            mps = map (\r -> helper r g) rs'
-                            fmps = filter (/= Nothing) mps
-                            fps = helper2 fmps
-                        in 
+sld (Prog rs) g = let rs' = map rename rs  -- Renamed Rule List
+                      mps = map (\r -> helper r g) rs'  -- Maybe Pairs
+                      fmps = filter (/= Nothing) mps  -- filtered Maybe Pairs
+                      fps = helper2 fmps  -- filtered pairs
+                      tl = map(\(x,y) -> (x, sld (Prog rs) y))  -- tree List
+                  in SLDTree (Goal g) tl
 
 
 helper2 :: [Maybe (Subst,Goal)] -> [(Subst, Goal)]
 helper2 [] = []
-helper2 [(Just (x,y))] = [(x,y)]
-helper2 (Just ((x,y):xs)) = helper2ac [] (Just (x,y):xs)
+helper2 (Nothing:xs) = [] ++ helper2 (xs)
+helper2 (Just ((x,y):xs)) = [(x,y)] ++ (helper2 xs)
 helper2 _ = error "What just happened."
- where
-  helper2ac :: [(Subst, Goal)] -> [Maybe (Subst, Goal)] -> [(Subst, Goal)]
-  helper2ac acc [] = acc
-  helper2ac acc (Just (x,y):xs) = acc ++ [(x,y)] ++ (helper2 xs)
-  
 
 helper :: Rule -> Goal -> Maybe (Subst,Goal)
-helper (Rule t ts) (Goal (g:gs) = case unify t g of
+helper (Rule t ts) (Goal (g:gs)) = case unify t g of
                                     Nothing -> Nothing
                                     Just s  -> (s, Goal (map (apply s) (ts ++ gs)))
 
