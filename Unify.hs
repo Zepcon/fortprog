@@ -1,7 +1,7 @@
 module Unify where
 
 import Type
-import Subs
+import Subst
 import Vars
 
 -- ds berechnet die Unstimmigkeitsmenge zweier Terme
