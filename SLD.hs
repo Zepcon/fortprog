@@ -3,24 +3,31 @@ module SLD where
 import Type
 import Subst
 import Rename
+import Unify
 
--- data Rule = Rule Term [Term]
--- data Goal = Goal [Term]
 data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show
 
--- data Prog = Prog [Rule]
--- data Goal = Goal [Term]
--- data SLDTree = SLDTree Goal [(Subst, SLDTree]
--- data Subst = Subst [(VarName,Term)]
 sld :: Prog -> Goal -> SLDTree
 sld (Prog []) (Goal []) = SLDTree (Goal []) []
 sld (Prog _) (Goal []) = SLDTree (Goal []) []
 sld (Prog []) (Goal x) = SLDTree (Goal x) []
-sld (Prog rs) (Goal y) = undefined --let a = (map rename rs) in map 
-                           
-helper :: Rule -> Goal -> Maybe Subst
-helper = undefined
+sld (Prog rs) (Goal g) = undefined --let a = (map rename rs) in map
+
+     let rs' = map rename rs
+         mps = map (\r -> helper r g) rs'
+         fmps = filter (/= Nothing) mps
+
+
+         
+
+helper :: Rule -> Goal -> Maybe (Subst,Goal)
+helper (Rule t ts) (Goal (g:gs) = case unify t g of
+                                    Nothing -> Nothing
+                                    Just s  -> (s, Goal (map (apply s) (ts ++ gs)))
+
+
+
 -- Regelkopf mit Literal unifizieren
    -- wenn es geht, also wenn man einen Unifikator findet, dann fügt man es als Kind hinzu
 
@@ -32,20 +39,6 @@ helper = undefined
 
 -- konstruiert den SLD-Baum zu einem Programm und einer Anfrage mittels FIRST
 --sld p g = undefined
-
-done = undefined
-
-{- sld progAppend goalAnfrage = case (done) of
-                       True -> [] [(sigma,[])]
-                       False -> append [(sigma,sld)] -}
-
-
--- prog:
--- append ([],L,L).
--- append([E|R],L,[E|RL]) :- append(R,L,RL).
---
--- goal:
--- append(X,Y,[1,2])
 
 -- SLD-Baum kann dann auf verschiedene Weisen durchlaufen werden,
 -- um alle Lösungen für eine Anfrage zu finden.
