@@ -1,4 +1,4 @@
-module Subs where
+module Subst where
 
 {- Subsitution: Ordnet jeder Variablen einen Term zu -}
 
