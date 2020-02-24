@@ -12,11 +12,11 @@ sld :: Prog -> Goal -> SLDTree
 sld (Prog []) (Goal []) = SLDTree (Goal []) []
 sld (Prog _) (Goal []) = SLDTree (Goal []) []
 sld (Prog []) (Goal x) = SLDTree (Goal x) []
-sld (Prog rs) g = let rs' = map rename rs  -- Renamed Rule List
+sld (Prog rs) g = let rs' = map rename rs (allVars g)  -- Renamed Rule List
                       mps = map (\r -> helper r g) rs'  -- Maybe Pairs
                       fmps = filter (/= Nothing) mps  -- filtered Maybe Pairs
                       fps = helper2 fmps  -- filtered pairs
-                      tl = map(\(x,y) -> (x, sld (Prog rs) y))  -- tree List
+                      tl = map (\(x,y) -> (x, sld (Prog rs) y)) fps -- tree List
                   in SLDTree (Goal g) tl
 
 
