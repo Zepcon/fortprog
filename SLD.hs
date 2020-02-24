@@ -4,32 +4,31 @@ import Type
 import Subst
 import Rename
 import Unify
+import Vars
+import Data.Maybe
 
 data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show
 
 sld :: Prog -> Goal -> SLDTree
-sld (Prog []) (Goal []) = SLDTree (Goal []) []
 sld (Prog _) (Goal []) = SLDTree (Goal []) []
-sld (Prog []) (Goal x) = SLDTree (Goal x) []
-sld (Prog rs) g = let rs' = map rename rs (allVars g)  -- Renamed Rule List
+sld (Prog rs) g = let rs' = map (\x -> rename x (allVars g)) rs  -- Renamed Rule List
                       mps = map (\r -> helper r g) rs'  -- Maybe Pairs
-                      fmps = filter (/= Nothing) mps  -- filtered Maybe Pairs
+                      fmps = filter (isJust) mps  -- filtered Maybe Pairs
                       fps = helper2 fmps  -- filtered pairs
                       tl = map (\(x,y) -> (x, sld (Prog rs) y)) fps -- tree List
-                  in SLDTree (Goal g) tl
+                  in SLDTree g tl
 
 
 helper2 :: [Maybe (Subst,Goal)] -> [(Subst, Goal)]
 helper2 [] = []
 helper2 (Nothing:xs) = [] ++ helper2 (xs)
-helper2 (Just ((x,y):xs)) = [(x,y)] ++ (helper2 xs)
-helper2 _ = error "What just happened."
+helper2 (Just (x,y):xs) = [(x,y)] ++ (helper2 xs)
 
 helper :: Rule -> Goal -> Maybe (Subst,Goal)
 helper (Rule t ts) (Goal (g:gs)) = case unify t g of
                                     Nothing -> Nothing
-                                    Just s  -> (s, Goal (map (apply s) (ts ++ gs)))
+                                    Just s  -> Just(s, Goal (map (apply s) (ts ++ gs)))
 
 
 -- Regelkopf mit Literal unifizieren
