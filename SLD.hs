@@ -31,18 +31,29 @@ helper (Rule t ts) (Goal (g:gs)) = case unify t g of
                                     Nothing -> Nothing  -- Kein Unfikator gefunden
                                     Just s  -> Just (s, Goal (map (apply s) (ts ++ gs)))  -- Unfikator auf restliche Regl und Goal zusammen anwenden
 
+-- Liste von Kindern -> DFS mappen -> Konkatenieren um Liste zu erhalten
 
 type Strategy = SLDTree -> [Subst]
 
 -- Tiefensuche
+-- SLDTree Goal [(Subst, SLDTree)]
+-- Goal [Term]
 dfs :: Strategy
-dfs = undefined
+dfs (SLDTree x []) = []
+dfs (SLDTree x sldt) = concatMap dfsHelp sldt
+
+dfsHelp :: (Subst, SLDTree) -> [Subst]
+dfsHelp (s, SLDTree (Goal []) []) = [s]
+dfsHelp (s, SLDTree (Goal x) []) = []
+dfsHelp (s, sldt) = map (compose s) (dfs sldt)
+
+
+bfs :: Strategy
+bfs (SLDTree x []) = []
+bfs (SLDTree x sldt) = undefined
 
 
 
-
-
---
 -- -- Breitensuche
 -- bfs :: Strategy
 -- bfs = undefined
