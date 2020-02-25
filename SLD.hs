@@ -47,6 +47,8 @@ dfsHelp (s, SLDTree (Goal []) []) = [s]
 dfsHelp (s, SLDTree (Goal x) []) = []
 dfsHelp (s, sldt) = map (compose s) (dfs sldt)
 
+type Queue = [(Subst, SLDTree)]
+
 
 bfs :: Strategy
 bfs (SLDTree x []) = []
