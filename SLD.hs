@@ -67,5 +67,7 @@ bfsHelp2 [] queue _ = queue  -- nichts mehr hinzufügen
 bfsHelp2 ((sub, (SLDTree g xs)): ts) queue sub2 = bfsHelp2 ts (queue ++ [(compose sub sub2,SLDTree g xs)]) sub2
 -- wir gehen eine Ebene tiefer, wenden die Subsitution an und packen alle Trees auf dieser Ebene in die Queue
 
-
 solve :: Strategy -> Prog -> Goal -> [Subst]
+solve stra pro go = let res = stra (sld pro go)
+                        res' = map (restrictTo (allVars go)) res  -- jede Substitution auf Variablen einschränken, welche im Goal vorkommen
+                    in res'
