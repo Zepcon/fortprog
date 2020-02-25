@@ -11,6 +11,8 @@ data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show
 
 sld :: Prog -> Goal -> SLDTree
+-- AKTUELL FEHLT: keine Variable, die weiter oben im Baum in Substitution vorkam
+-- Testbeispiel dafür: delete(X,[1,2,L],Y).
 sld (Prog _) (Goal []) = SLDTree (Goal []) []
 sld (Prog rs) g = let rs' = map (\x -> rename x (allVars g)) rs  -- Renamed Rule List
                       mps = map (\r -> helper r g) rs'  -- Maybe Pairs
