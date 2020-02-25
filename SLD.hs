@@ -32,18 +32,11 @@ helper (Rule t ts) (Goal (g:gs)) = case unify t g of
                                     Just s  -> Just (s, Goal (map (apply s) (ts ++ gs)))  -- Unfikator auf restliche Regl und Goal zusammen anwenden
 
 
--- konstruiert den SLD-Baum zu einem Programm und einer Anfrage mittels FIRST
---sld p g = undefined
+type Strategy = SLDTree -> [Subst]
 
--- SLD-Baum kann dann auf verschiedene Weisen durchlaufen werden,
--- um alle Lösungen für eine Anfrage zu finden.
--- durch die Belegung der freien Variablen der ursprünglichen Anfrage
--- Suchstrategien können mithilfe des Typs ausgedrückt werden:
--- -- type Strategy = SLDTree -> [Subst]
---
--- -- Tiefensuche
--- dfs :: Strategy
--- dfs = undefined
+-- Tiefensuche
+dfs :: Strategy
+dfs = undefined
 --
 -- -- Breitensuche
 -- bfs :: Strategy
