@@ -68,7 +68,4 @@ bfsHelp2 ((sub, (SLDTree g xs)): ts) queue sub2 = bfsHelp2 ts (queue ++ [(compos
 -- wir gehen eine Ebene tiefer, wenden die Subsitution an und packen alle Trees auf dieser Ebene in die Queue
 
 
-
--- -- Breitensuche
--- bfs :: Strategy
--- bfs = undefined
+solve :: Strategy -> Prog -> Goal -> [Subst]
