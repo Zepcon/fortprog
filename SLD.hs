@@ -17,12 +17,12 @@ instance Pretty SLDTree where
     pretty'           []          = []
     pretty' ((subs, sldTree): ts) = "(" ++ pretty subs ++ ", " ++ pretty sldTree ++ pretty' ts ++ ")"
 
-sldt = sld p g
+{- sldt = sld p g
 p = Prog [r1, r2]
 r1 = Rule (Comb "append" [Comb "[]" [], Var "L", Var "L"]) []
 r2 = Rule (Comb "append" [Comb "." [Var "E", Var "R"], Var "L" ,Comb "." [Var "E", Var "RL"]])
           [Comb "append" [Var "R", Var "L", Var "R"]]
-g = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Comb "2" [], Comb "[]" []]]]]
+g = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Comb "2" [], Comb "[]" []]]]] -}
 
 data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show
@@ -32,14 +32,14 @@ data SLDTree = SLDTree Goal [(Subst, SLDTree)]
 sld :: Prog -> Goal -> SLDTree
 -- AKTUELL FEHLT: keine Variable, die weiter oben im Baum in Substitution vorkam
 -- Testbeispiel dafür: delete(X,[1,2,L],Y).
-sld (Prog rs) (Goal []) = SLDTree (Goal []) []
+sld (Prog _) (Goal []) = SLDTree (Goal []) []
 sld (Prog []) (Goal gs) = SLDTree (Goal gs) []
-sld rs g = sld' rs [] g
+sld r go = sld' r [] go
  where
   sld' :: Prog -> [VarName] -> Goal -> SLDTree
   sld' (Prog rs) nosub g = let novars = (allVars g) ++ nosub
                                rs' = map (\x -> rename x novars) rs  -- Renamed Rule List
-                               mps = map (\r -> helper r g) rs'  -- Maybe Pairs
+                               mps = map (\r1 -> helper r1 g) rs'  -- Maybe Pairs
                                fmps = filter isJust mps  -- filtered Maybe Pairs
                                --fps = helper2 fmps  -- filtered pairs
                                fps = map fromJust fmps  -- filtered pairs
@@ -54,6 +54,7 @@ helper2 (Just (x,y):xs) = [(x,y)] ++ (helper2 xs)
 
 -- Unfizieren von Rule und Goal
 helper :: Rule -> Goal -> Maybe (Subst,Goal)
+helper _ (Goal []) = Nothing
 helper (Rule t ts) (Goal (g:gs)) = case unify t g of
                                     Nothing -> Nothing  -- Kein Unfikator gefunden
                                     Just s  -> Just (s, Goal (map (apply s) (ts ++ gs)))  -- Unfikator auf restliche Regl und Goal zusammen anwenden
