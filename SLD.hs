@@ -37,11 +37,12 @@ type Strategy = SLDTree -> [Subst]
 -- Tiefensuche
 dfs :: Strategy
 dfs = undefined
+
+
+
+
+
 --
 -- -- Breitensuche
 -- bfs :: Strategy
 -- bfs = undefined
---
--- -- iterative Tiefensuche
--- idfs :: Strategy
--- idfs = undefined
