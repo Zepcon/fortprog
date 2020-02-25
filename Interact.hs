@@ -14,13 +14,12 @@ import Parser
 -- Es soll eine Hilfe angezeigt werden können, die alle Funktionen
 -- der interaktiven Umgebung auflistet.
 help :: String
-help = "Commands available from the prompt: \n" ++
-" <goal>      Solves/proves the specified goal. \n" ++
-" :h          Shows this help message. \n" ++
-" :l <file>   Loads the specified file. \n" ++
-" :q          Exits the interactive environment. \n" ++
-" :s <strat>  Sets the specified search strategy
-where <strat> is one of 'dfs' or 'bfs'."
+help = "Commands available from the prompt: \n" ++ 
+       " <goal>      Solves/proves the specified goal. \n" ++
+       " :h          Shows this help message. \n" ++
+       " :l <file>   Loads the specified file. \n" ++
+       " :q          Exits the interactive environment. \n" ++
+       " :s <strat>  Sets the specified search strategy where <strat> is one of 'dfs' or 'bfs'."
 
 -- Der Benutzer soll ein Programm laden können, das solange geladen bleibt,
 -- bis ein neues geladen wird.
