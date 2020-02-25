@@ -49,10 +49,23 @@ dfsHelp (s, sldt) = map (compose s) (dfs sldt)
 
 type Queue = [(Subst, SLDTree)]
 
-
+-- Alle Substitutionen in SLD Baum mit bfs
 bfs :: Strategy
-bfs (SLDTree x []) = []
-bfs (SLDTree x sldt) = undefined
+bfs sldt = bfsHelp [(Subst [], sldt)]  -- initial leere Subsitution und den Tree
+
+-- Reduzieren der Queue auf die Substitution
+bfsHelp :: Queue -> [Subst]
+bfsHelp ((sub, (SLDTree (Goal []) [])): []) = [sub]  -- erstes Element in Queue ist Ergebnis, queue hat nicht mehr Elemente, keine subTrees
+bfsHelp ((sub, (SLDTree (Goal _) [])): []) = []  -- erstes Element in Queue ist kein Ergebnis, queue hat nicht mehr Elemente, keine SubTrees
+bfsHelp ((sub, (SLDTree (Goal []) [])): xs) = [sub] ++ (bfsHelp xs)  -- erstes Element ist Lösung, queue hat weitere Elemente, keine SubTrees, Lösung hinzufügen und weitere Trees der Ebene abhandeln
+bfsHelp ((sub, (SLDTree (Goal _) [])): xs) = [] ++ (bfsHelp xs)  -- erstes Element ist kein Ergebnis, Queue hat weitere Elemente, keine subTrees also nächsten aus der Ebene abhandeln
+bfsHelp ((sub, (SLDTree (Goal _) subTrees)): xs) = bfsHelp (bfsHelp2 subTrees xs sub)  -- wir haben Subtrees, also kein Ergebnis, also Ebenen der Subtrees in Queue packen
+
+-- Subtrees zu einer Queue hinzufügen
+bfsHelp2 :: [(Subst, SLDTree)] -> Queue -> Subst -> Queue
+bfsHelp2 [] queue _ = queue  -- nichts mehr hinzufügen
+bfsHelp2 ((sub, (SLDTree g xs)): ts) queue sub2 = bfsHelp2 ts (queue ++ [(compose sub sub2,SLDTree g xs)]) sub2
+-- wir gehen eine Ebene tiefer, wenden die Subsitution an und packen alle Trees auf dieser Ebene in die Queue
 
 
 
