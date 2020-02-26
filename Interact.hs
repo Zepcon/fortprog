@@ -3,6 +3,7 @@ module Interact where
 import Parser
 import Data.List
 import Type
+import Pretty
 import SLD
 
 
@@ -28,26 +29,49 @@ help = "Commands available from the prompt: \n" ++
 
 main = do
         putStrLn("Welcome!  \nType \"h\" for help.")
-        putStr("?- ")
-        input <- getLine
-        evaluateInput (words input)
-        putStrLn("Bye")
+        mainloop (Prog []) (Comb "." []) dfs
 
 
-
-evaluateInput :: [String] -> IO()
-evaluateInput [":h"] = putStr(help)
-evaluateInput [":q"] = putStr("Exit")
-evaluateInput ([":s","bfs"]) = putStr "Strategy set to breadth-first search."
-evaluateInput ([":s","dfs"]) = putStr "Strategy set to depth-first search."
-evaluateInput f@(":l":[filename]) = case (parseFile filename) of
-                                                                            (Left err) -> putStr "Fail."
-                                                                            (Right suc) -> putStr "Loaded."
-
-
-
-
-
+mainloop :: Prog -> Term -> Strategy -> IO ()
+mainloop prog term stra = do
+                               putStr "?- "
+                               input <- getLine
+                               case (words input) of  -- input holen
+                                [":h"] -> do
+                                 putStrLn help
+                                [":help"] -> do
+                                 putStrLn help
+                                 mainloop prog term stra
+                                [":quit"] -> do
+                                 putStrLn "Bye"
+                                 return()
+                                [":q"] -> do
+                                 putStrLn "Bye. "
+                                 return()
+                                [":s","bfs"] -> do
+                                 putStrLn "Strategy set to breadth-first search."
+                                 mainloop prog term bfs
+                                [":s","dfs"] -> do
+                                 putStrLn "Strategy set to depth-first search."
+                                 mainloop prog term dfs
+                                (":l":[filename]) -> do
+                                  x <- parseFile filename
+                                  case x of
+                                   (Left err) -> do
+                                     putStrLn err
+                                     mainloop prog term stra
+                                   (Right suc) -> do
+                                     putStrLn "Loaded. "
+                                     mainloop suc term stra
+                                _ -> do
+                                  let y = parse input :: Either String Goal
+                                  case y of
+                                   (Left err) -> do
+                                    putStrLn err
+                                    mainloop prog term stra
+                                   (Right suc) -> do
+                                    putStrLn ("Pretty stuff: " ++ concatMap pretty (solve stra prog suc))
+                                    mainloop prog term stra
 
 
 
