@@ -17,49 +17,46 @@ instance Pretty SLDTree where
     pretty'           []          = []
     pretty' ((subs, sldTree): ts) = "(" ++ pretty subs ++ ", " ++ pretty sldTree ++ pretty' ts ++ ")"
 
-{- sldt = sld p g
+sldt = sld p g
 p = Prog [r1, r2]
 r1 = Rule (Comb "append" [Comb "[]" [], Var "L", Var "L"]) []
 r2 = Rule (Comb "append" [Comb "." [Var "E", Var "R"], Var "L" ,Comb "." [Var "E", Var "RL"]])
           [Comb "append" [Var "R", Var "L", Var "R"]]
-g = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Comb "2" [], Comb "[]" []]]]] -}
+g = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Comb "2" [], Comb "[]" []]]]]
 
 data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show
 
--- SLD Hilfsfunkion noch um ein Argument mehr ergänzen, in welchen die Variabeln mitgeführt werden, die bisherigen Substitutionen vorgekommen sind
 
 sld :: Prog -> Goal -> SLDTree
--- AKTUELL FEHLT: keine Variable, die weiter oben im Baum in Substitution vorkam
--- Testbeispiel dafür: delete(X,[1,2,L],Y).
 sld (Prog _) (Goal []) = SLDTree (Goal []) []
 sld (Prog []) (Goal gs) = SLDTree (Goal gs) []
-sld r go = sld' r [] go
+sld r go = sld' r [] go  -- initial leere Liste von verbotenen Substitutionen
  where
-  sld' :: Prog -> [VarName] -> Goal -> SLDTree
+  sld' :: Prog -> [VarName] -> Goal -> SLDTree  -- in Liste zusätzlich die Namen der Variablen in den Substitutionen mitführen
   sld' (Prog rs) nosub g = let novars = (allVars g) ++ nosub
-                               rs' = map (\x -> rename x novars) rs  -- Renamed Rule List
+                               rs' = (map (\x -> rename x novars) rs)  -- Renamed Rule List
                                mps = map (\r1 -> helper r1 g) rs'  -- Maybe Pairs
                                fmps = filter isJust mps  -- filtered Maybe Pairs
                                --fps = helper2 fmps  -- filtered pairs
                                fps = map fromJust fmps  -- filtered pairs
                                tl = map (\(sub,goal) -> (sub, sld' (Prog rs') (novars ++ (allVars sub)) goal)) fps  -- tree List, bisherige Variablennamen auch zu den Verbotenen dazunehmen
                            in SLDTree g tl  -- alles zusammenbauen
-
--- Mache aus dem Maybe eine normale Tupel Liste
-helper2 :: [Maybe (Subst,Goal)] -> [(Subst, Goal)]
-helper2 [] = []
-helper2 (Nothing:xs) = [] ++ helper2 (xs)
-helper2 (Just (x,y):xs) = [(x,y)] ++ (helper2 xs)
+--
 
 -- Unfizieren von Rule und Goal
 helper :: Rule -> Goal -> Maybe (Subst,Goal)
 helper _ (Goal []) = Nothing
 helper (Rule t ts) (Goal (g:gs)) = case unify t g of
                                     Nothing -> Nothing  -- Kein Unfikator gefunden
-                                    Just s  -> Just (s, Goal (map (apply s) (ts ++ gs)))  -- Unfikator auf restliche Regl und Goal zusammen anwenden
+                                    Just s  -> Just (s, (Goal (map (apply s) (ts ++ gs))))  -- Unfikator auf restliche Regl und Goal zusammen anwenden
 
--- Liste von Kindern -> DFS mappen -> Konkatenieren um Liste zu erhalten
+
+-- Mache aus dem Maybe eine normale Tupel Liste
+helper2 :: [Maybe (Subst,Goal)] -> [(Subst, Goal)]
+helper2 [] = []
+helper2 (Nothing:xs) = [] ++ helper2 (xs)
+helper2 (Just (x,y):xs) = [(x,y)] ++ (helper2 xs)
 
 type Strategy = SLDTree -> [Subst]
 

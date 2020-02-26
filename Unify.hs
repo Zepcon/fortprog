@@ -44,16 +44,18 @@ unify :: Term -> Term -> Maybe Subst
 unify t1 t2 = unifyHelp (Subst []) t1 t2
 
 -- Hilfe um Substitution zu bauen
--- Variable und Term auch in anderer Reihenfolge ergänzen
 unifyHelp :: Subst -> Term -> Term -> Maybe Subst
 unifyHelp sigma t1 t2 = case (ds (apply sigma t1) (apply sigma t2)) of  -- Bilden von ds nach Anwendung von Substitutionen
                          Nothing -> Just sigma  -- Substitution gefunden
                          Just(Var v,t) -> if not (occur (Var v) t)  -- occur check für Variable in Term
                                            then unifyHelp (compose((single v t)) sigma) t1 t2  -- Rekursion auf erweiterte Substitution
                                            else Nothing  -- Occur check erfolgreich, also Fail
+                         Just(t, Var v) -> if not (occur (Var v) t) -- Gleicher Fall nochmal für andere Reihenfolge
+                                           then unifyHelp (compose((single v t)) sigma) t1 t2  -- Rekursion auf erweiterte Substitution
+                                           else Nothing
                          Just(_,_) -> Nothing  -- Beides Terme, also fail
 
--- checke ob eine Variable in einem Term vorkommt             
+-- checke ob eine Variable in einem Term vorkommt
 occur :: Term -> Term -> Bool
 occur (Var a) (Comb _ x) =  (elem a (allVars x))  -- deswegen Ergänzung in Vars gemacht
-occur _ _ = False -- Wir wollen nur Variable in Term wissen, deswegen Alternativen egal
+occur _ _ = False -- Wir wollen nur Variable in Term wissen, deswegen Alternativen egal, also false
