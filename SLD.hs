@@ -21,10 +21,9 @@ sldt = sld p g
 p = Prog [r1, r2]
 r1 = Rule (Comb "append" [Comb "[]" [], Var "L", Var "L"]) []
 r2 = Rule (Comb "append" [Comb "." [Var "E", Var "R"], Var "L" ,Comb "." [Var "E", Var "RL"]])
-          [Comb "append" [Var "R", Var "L", Var "R"]]
+          [Comb "append" [Var "R", Var "L", Var "RL"]]
 g = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Comb "2" [], Comb "[]" []]]]]
 
--- Beispiel mit append [][][]
 
 data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show

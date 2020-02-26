@@ -35,7 +35,7 @@ main = do
 
 
 
-evaluateInput :: [String] -> IO ()
+evaluateInput :: [String] -> IO()
 evaluateInput [":h"] = putStr(help)
 evaluateInput [":q"] = putStr("Exit")
 evaluateInput ([":s","bfs"]) = putStr "Strategy set to breadth-first search."
