@@ -1,33 +1,44 @@
+=(X, X).
+
 ehemann(christine, heinz).
-ehemann(maria,     fritz).
-ehemann(monika,    herbert).
-ehemann(angelika,  hubert).
-ehemann(claudia,   karl).
+ehemann(maria, fritz).
+ehemann(monika, herbert).
+ehemann(angelika, hubert).
 
-mutter(herbert,  christine).
+mutter(herbert, christine).
 mutter(angelika, christine).
-mutter(hubert,   maria).
-mutter(karl,     maria).
-mutter(susanne,  monika).
-mutter(norbert,  monika).
-mutter(andreas,  angelika).
-mutter(anna,     claudia).
+mutter(hubert, maria).
+mutter(susanne, monika).
+mutter(norbert, monika).
+mutter(andreas, angelika).
 
-frau(christine).
-frau(maria).
-frau(monika).
-frau(angelika).
-frau(claudia).
-frau(anna).
+vater(K, V) :- ehemann(M, V), mutter(K, M).
 
-vater(Kind,Vater) :- ehemann(Mutter,Vater), mutter(Kind,Mutter).
+elter(K, E) :- vater(K, E).
+elter(K, E) :- mutter(K, E).
 
-grossvater(E,G) :- vater(E,V), vater(V,G).
-grossvater(E,G) :- mutter(E,M), vater(M,G).
+grossvater(E, G) :- elter(E, F), vater(F, G).
 
-grossmutter(Person, Grossmutter) :- mutter(Person, X), mutter(X,Grossmutter).
-grossmutter(Person, Grossmutter) :- vater(Person, X), mutter(X,Grossmutter).
-grossmutter(Person, Grossmutter) :- grossvater(Person, Grossvater), ehemann(Grossmutter, Grossvater).
+grossvaeter(Gs) :- findall([E, G], grossvater(E, G), Gs).
 
-tante(Person, Tante) :- geschwister(Tante, X), vater(Person,X), frau(Tante).
-tante(Person, Tante) :- geschwister(Tante, X), mutter(Person,X), frau(Tante).
+vorfahre(N, V) :- vorfahre(N, V2), vorfahre(V2, V).
+vorfahre(N, V) :- elter(N, V).
+
+geschwister(S, P) :- mutter(S, M), mutter(P,M), \+(=(P, S)).
+
+% Test query: "vorfahre(X,Y).".
+% Expected result (with dfs): No solutions and non-termination.
+% Expected result (with bfs or iddfs): Multiple solutions, but still
+% non-termination.
+% Tests completeness of bfs and iddfs.
+
+% Test query: "geschwister(X,Y).".
+% Expected result: 4 solutions, "{X -> herbert, Y -> angelika}",
+% "{X -> angelika, Y -> herbert}", "{X -> susanne, Y -> norbert}", and
+% "{X -> norbert, Y -> susanne}".
+% Tests implementation of negation as a failure.
+
+% Test query: "grossvaeter(Xs).".
+% Expected result: One solution, "{Xs -> [[susanne, heinz], [norbert, heinz],
+% [andreas, fritz], [andreas, heinz]]}".
+% Tests implementation of encapsulation.
