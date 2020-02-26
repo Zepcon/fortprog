@@ -8,16 +8,10 @@ import SLD
 import Subst
 
 
+-- Wichtig
+inGreen :: String -> String
+inGreen s = "\x1b[32m" ++ s ++ "\x1b[0m"
 
--- Die interaktive Umgebung soll solange aktiv sein, bis sie vom Benutzer beendet wird.
-  -- Umgebung erstellen ??
--- Meldung nach dem Starten:
-  -- "Welcome! \n"
-  -- "Type ":h" for help."
--- :q beendet die Umgebung
-
--- Es soll eine Hilfe angezeigt werden können, die alle Funktionen
--- der interaktiven Umgebung auflistet.
 help :: String
 help = "Commands available from the prompt: \n" ++
        " <goal>      Solves/proves the specified goal. \n" ++
@@ -29,7 +23,11 @@ help = "Commands available from the prompt: \n" ++
 
 
 main = do
-        putStrLn("Welcome!  \nType \"h\" for help.")
+        putStrLn("\n***************************")
+        putStrLn("*" ++ (inGreen "  Flavio und Lara @2020  ") ++ "*")
+        putStrLn( "***************************")
+        putStrLn(inGreen "Welcome to interactive Prolog!\n")
+        putStrLn("Type \":h\" for help.")
         mainloop (Prog []) dfs
 
 
@@ -43,11 +41,11 @@ mainloop prog stra = do
                                 [":help"] -> do
                                  putStrLn help
                                  mainloop prog stra
-                                [":quit"] -> do
-                                 putStrLn "Bye"
-                                 return()
                                 [":q"] -> do
-                                 putStrLn "Bye. "
+                                 putStrLn (inGreen "Bye.")
+                                 return()
+                                [":quit"] -> do
+                                 putStrLn (inGreen "Bye.")
                                  return()
                                 [":s","bfs"] -> do
                                  putStrLn "Strategy set to breadth-first search."
