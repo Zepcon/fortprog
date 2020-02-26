@@ -17,19 +17,8 @@ instance Pretty SLDTree where
     pretty'           []          = []
     pretty' ((subs, sldTree): ts) = "(" ++ pretty subs ++ ", " ++ pretty sldTree ++ pretty' ts ++ ")"
 
-sldt = sld p g
-p = Prog [r1, r2]
-r1 = Rule (Comb "append" [Comb "[]" [], Var "L", Var "L"]) []
-r2 = Rule (Comb "append" [Comb "." [Var "E", Var "R"], Var "L" ,Comb "." [Var "E", Var "RL"]])
-          [Comb "append" [Var "R", Var "L", Var "RL"]]
---g = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Comb "2" [], Comb "[]" []]]]]
--- g = Goal [Comb "append" [Var "X", Var "Y", Comb "." []]]
-g = Goal [Comb "append" [Var "X", Comb "[]" [], Comb "." [Comb "1" [], Comb "[]" []]]]
--- Beispiel mit append [][][]
-
 data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show
-
 
 sld :: Prog -> Goal -> SLDTree
 sld (Prog _) (Goal []) = SLDTree (Goal []) []
@@ -45,7 +34,6 @@ sld r go = sld' r [] go  -- initial leere Liste von verbotenen Substitutionen
                                fps = map fromJust fmps  -- filtered pairs
                                tl = map (\(sub,goal) -> (sub, sld' (Prog rs') (novars ++ (allVars sub)) goal)) fps  -- tree List, bisherige Variablennamen auch zu den Verbotenen dazunehmen
                            in SLDTree g tl  -- alles zusammenbauen
---
 
 -- Unfizieren von Rule und Goal
 helper :: Rule -> Goal -> Maybe (Subst,Goal)
