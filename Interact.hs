@@ -77,46 +77,18 @@ mainloop prog stra = do
                                     putStrLn "Wrong input!"
                                     mainloop prog stra
                                    (Right suc) -> do
-                                    --putStrLn (concatMap pretty (solve stra prog suc))
-                                    solvePrint (solve stra prog suc)
+                                    let erg = (solve stra prog suc)
+                                    if ((length erg) /= 0) then solvePrint(erg) else putStrLn("No solutions.")
                                     mainloop prog stra
 
 
 
--- Substitutionen nur auf Semikolon printen
+-- Substitutionen nur auf Semikolon Eingabe printen
 solvePrint :: [Subst] -> IO ()
-solvePrint [] = return ()
+solvePrint [] = return () -- Fertig geprintet
 solvePrint (x:xs) = do
                      putStr(pretty x)
                      input <- getLine
                      if (input == ";") then do
                                              solvePrint(xs)
-                                        else return ()
-
-
--- Der Benutzer soll ein Programm laden können, das solange geladen bleibt,
--- bis ein neues geladen wird.
--- :l <file> läd die spezifizierte Datei
--- parseFile ??
--- Meldung nach dem Laden:
-  -- "Loaded."
-
-
--- Der Benutzer soll zwischen Anfragen jederzeit die Suchstrategie wechseln können.
--- :s <strat> setzt die Suchstrategie auf dfs oder bfs
--- Parse Prog ??
--- Meldung nach dem Setzen der Suchstrategie:
-  -- "Strategy set to " ++ case <start> of
-  --                            dfs -> "depth-first search."
-  --                            bfs -> "breadth-first search."
-  -- es folgt die Anfrage:
-
--- Es sollen Anfragen gestellt werden können, deren Lösungen nacheinander angefordert werden können.
-  -- <goal> löst/beweist die Anfrage goal
-  -- Parse Goal ??
--- mithilfe von ; kann der User weitere Lösungen anfordern
--- Meldung, wenn keine weitere Lösung vorhanden ist:
-  -- "No more solutions."
-
--- Die interaktive Umgebung soll robust gegenüber Fehlern sein
--- und stets sinnvolle Rückmeldungen ausgeben.
+                                        else return ()  -- Nutzer hat keinen Bock mehr auf weitere Ergebnisse
