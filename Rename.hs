@@ -14,8 +14,7 @@ createSub :: [VarName] -> [VarName] -> Subst
     -- single x y = Subst [(x,y)]
 
 createSub r1 r2 = let fr1 = filter (\a -> not(a == "_")) r1
-                      ufr1 = map(\x -> (Var x)) fr1
-                      partres = zipWith single ufr1 (filter (\x -> (not (elem x r2))) freshVars)
+                      partres = zipWith single fr1 (map(\x -> (Var x))(filter (\x -> (not (elem x r2))) freshVars))
                   in foldl compose empty partres
 
 

@@ -68,7 +68,7 @@ type Queue = [(Subst, SLDTree)]
 
 -- alle Substitutionen in SLD Baum mit bfs
 bfs :: Strategy
-bfs sldt = bfsHelp [(Subst [], sldt)]  -- initial leere Subsitution und den Tree
+bfs sldt = bfsHelp [(empty, sldt)]  -- initial leere Subsitution und den Tree
 
 -- reduzieren der Queue auf die Substitution
 bfsHelp :: Queue -> [Subst]
