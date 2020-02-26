@@ -5,6 +5,7 @@ import Data.List
 import Type
 import Pretty
 import SLD
+import Subst
 
 
 
@@ -29,11 +30,11 @@ help = "Commands available from the prompt: \n" ++
 
 main = do
         putStrLn("Welcome!  \nType \"h\" for help.")
-        mainloop (Prog []) (Comb "." []) dfs
+        mainloop (Prog []) dfs
 
 
-mainloop :: Prog -> Term -> Strategy -> IO ()
-mainloop prog term stra = do
+mainloop :: Prog -> Strategy -> IO ()
+mainloop prog stra = do
                                putStr "?- "
                                input <- getLine
                                case (words input) of  -- input holen
@@ -41,7 +42,7 @@ mainloop prog term stra = do
                                  putStrLn help
                                 [":help"] -> do
                                  putStrLn help
-                                 mainloop prog term stra
+                                 mainloop prog stra
                                 [":quit"] -> do
                                  putStrLn "Bye"
                                  return()
@@ -50,36 +51,47 @@ mainloop prog term stra = do
                                  return()
                                 [":s","bfs"] -> do
                                  putStrLn "Strategy set to breadth-first search."
-                                 mainloop prog term bfs
+                                 mainloop prog bfs
                                 [":set","bfs"] -> do
                                  putStrLn "Strategy set to breadth-first search."
-                                 mainloop prog term bfs
+                                 mainloop prog bfs
                                 [":s","dfs"] -> do
                                  putStrLn "Strategy set to depth-first search."
-                                 mainloop prog term dfs
+                                 mainloop prog dfs
                                 [":set","dfs"] -> do
                                  putStrLn "Strategy set to depth-first search."
-                                 mainloop prog term dfs
+                                 mainloop prog dfs
                                 (":l":[filename]) -> do
                                   x <- parseFile filename
                                   case x of
                                    (Left err) -> do
                                      putStrLn err
-                                     mainloop prog term stra
+                                     mainloop prog stra
                                    (Right suc) -> do
                                      putStrLn "Loaded. "
-                                     mainloop suc term stra
+                                     mainloop suc stra
                                 _ -> do
                                   let y = parse input :: Either String Goal
                                   case y of
                                    (Left err) -> do
                                     putStrLn "Wrong input!"
-                                    mainloop prog term stra
+                                    mainloop prog stra
                                    (Right suc) -> do
-                                    putStrLn (concatMap pretty (solve stra prog suc))
-                                    mainloop prog term stra
+                                    --putStrLn (concatMap pretty (solve stra prog suc))
+                                    solvePrint (solve stra prog suc)
+                                    mainloop prog stra
 
 
+
+-- Substitutionen nur auf Semikolon printen
+solvePrint :: [Subst] -> IO ()
+solvePrint [] = return ()
+solvePrint (x:xs) = do
+                     putStr(pretty x)
+                     input <- getLine
+                     if (input == ";") then do
+                                             solvePrint(xs)
+                                        else return ()
 
 
 -- Der Benutzer soll ein Programm laden können, das solange geladen bleibt,
