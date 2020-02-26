@@ -24,6 +24,8 @@ r2 = Rule (Comb "append" [Comb "." [Var "E", Var "R"], Var "L" ,Comb "." [Var "E
           [Comb "append" [Var "R", Var "L", Var "R"]]
 g = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Comb "2" [], Comb "[]" []]]]]
 
+-- Beispiel mit append [][][]
+
 data SLDTree = SLDTree Goal [(Subst, SLDTree)]
    deriving Show
 

@@ -6,7 +6,6 @@ import Subst
 
 -- Variablen von rule neu benennen, falls diese auch in der zweiten Rule vorkommen
 rename :: Rule -> [VarName] -> Rule
-rename (Rule (Var "_") []) _ = Rule (Var "_") []
 rename r@(Rule t ts) r2 = Rule (apply (createSub (allVars r) r2) t) (map (apply (createSub (allVars r) r2)) ts)
 
 -- Bilde bestehende Variablen auf neue ab, Unterstrich kann ignoriert werden

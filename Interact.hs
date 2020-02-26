@@ -1,6 +1,9 @@
 module Interact where
 
 import Parser
+import Data.List
+import Type
+import SLD
 
 
 
@@ -14,12 +17,40 @@ import Parser
 -- Es soll eine Hilfe angezeigt werden können, die alle Funktionen
 -- der interaktiven Umgebung auflistet.
 help :: String
-help = "Commands available from the prompt: \n" ++ 
+help = "Commands available from the prompt: \n" ++
        " <goal>      Solves/proves the specified goal. \n" ++
        " :h          Shows this help message. \n" ++
        " :l <file>   Loads the specified file. \n" ++
        " :q          Exits the interactive environment. \n" ++
        " :s <strat>  Sets the specified search strategy where <strat> is one of 'dfs' or 'bfs'."
+
+
+
+main = do
+        putStrLn("Welcome!  \nType \"h\" for help.")
+        putStr("?- ")
+        input <- getLine
+        evaluateInput (words input)
+        putStrLn("Bye")
+
+
+
+evaluateInput :: [String] -> IO ()
+evaluateInput [":h"] = putStr(help)
+evaluateInput [":q"] = putStr("Exit")
+evaluateInput ([":s","bfs"]) = putStr "Strategy set to breadth-first search."
+evaluateInput ([":s","dfs"]) = putStr "Strategy set to depth-first search."
+evaluateInput f@(":l":[filename]) = case (parseFile filename) of
+                                                                            (Left err) -> putStr "Fail."
+                                                                            (Right suc) -> putStr "Loaded."
+
+
+
+
+
+
+
+
 
 -- Der Benutzer soll ein Programm laden können, das solange geladen bleibt,
 -- bis ein neues geladen wird.
