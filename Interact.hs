@@ -51,7 +51,13 @@ mainloop prog term stra = do
                                 [":s","bfs"] -> do
                                  putStrLn "Strategy set to breadth-first search."
                                  mainloop prog term bfs
+                                [":set","bfs"] -> do
+                                 putStrLn "Strategy set to breadth-first search."
+                                 mainloop prog term bfs
                                 [":s","dfs"] -> do
+                                 putStrLn "Strategy set to depth-first search."
+                                 mainloop prog term dfs
+                                [":set","dfs"] -> do
                                  putStrLn "Strategy set to depth-first search."
                                  mainloop prog term dfs
                                 (":l":[filename]) -> do
@@ -67,10 +73,10 @@ mainloop prog term stra = do
                                   let y = parse input :: Either String Goal
                                   case y of
                                    (Left err) -> do
-                                    putStrLn err
+                                    putStrLn "Wrong input!"
                                     mainloop prog term stra
                                    (Right suc) -> do
-                                    putStrLn ("Pretty stuff: " ++ concatMap pretty (solve stra prog suc))
+                                    putStrLn (concatMap pretty (solve stra prog suc))
                                     mainloop prog term stra
 
 
