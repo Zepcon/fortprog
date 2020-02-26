@@ -1,4 +1,4 @@
-module Subst where
+module Subst(empty, single, apply, compose, restrictTo, Subst()) where
 
 {- Subsitution: Ordnet jeder Variablen einen Term zu -}
 

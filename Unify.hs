@@ -30,7 +30,7 @@ dsHelp (x1:xs1) (y1:ys1) = case ds x1 y1 of
 -- sofern die beiden Terme unifizierbar sind
 -- sonst: Nothing
 unify :: Term -> Term -> Maybe Subst
-unify t1 t2 = unifyHelp (Subst []) t1 t2
+unify t1 t2 = unifyHelp (empty) t1 t2
 
 -- Hilfe, um Substitution zu bauen
 unifyHelp :: Subst -> Term -> Term -> Maybe Subst
