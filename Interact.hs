@@ -27,7 +27,7 @@ main = do
         putStrLn( "***************************")
         putStrLn(inGreen "Welcome to interactive Prolog!\n")
         putStrLn("Type \":h\" for help.")
-        mainloop (Prog []) dfs
+        mainloop (Prog []) bfs
 
 
 mainloop :: Prog -> Strategy -> IO ()

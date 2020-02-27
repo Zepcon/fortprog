@@ -59,10 +59,12 @@ dfs (SLDTree _ []) = []
 dfs (SLDTree _ sldt) = concatMap dfsHelp sldt
 
 dfsHelp :: (Subst, SLDTree) -> [Subst]
-dfsHelp (s, SLDTree (Goal []) []) = [s]
--- dfsHelp (s, SLDTree (Goal x) []) = []
-dfsHelp (_, SLDTree (Goal _) []) = []
-dfsHelp (s, sldt) = map (compose s) (dfs sldt)
+dfsHelp (s, SLDTree (Goal []) []) = [s]  -- Lösung gefunden
+dfsHelp (_, SLDTree (Goal _) []) = []  -- Goal nicht leer aber keine weiteren Ebenen, also leer
+dfsHelp (s, SLDTree _ x) = concatMap (dfsHelp2 s) x  -- Goal nicht leer aber noch mehr Ebenen vorhanden, also tiefer gehen
+ where
+   dfsHelp2 :: Subst -> (Subst, SLDTree) -> [Subst]  -- Substitution auf jeden Subtree anwenden, welcher kommt
+   dfsHelp2 sub2 (sub,tree) = dfsHelp (compose sub sub2, tree)
 
 type Queue = [(Subst, SLDTree)]
 
