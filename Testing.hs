@@ -26,15 +26,9 @@ go = Goal [Comb "append" [Var "X", Var "Y", Comb "." [Comb "1" [], Comb "." [Com
 
 ------------------------------------------------------------------------------
 
-sldt2 :: SLDTree
-sldt2 = sld pro2 goal
 
-pro2 :: Prog
-pro2 = Prog [rule1a, rule2a]
 
-rule1a:: Rule
 
-rule 2a :: Rule
 
 -- =(f(A,B),f(f(C),g(A))).
 

@@ -76,6 +76,10 @@ mainloop prog stra = do
                                     putStrLn "Wrong input!"
                                     mainloop prog stra
                                    (Right suc) -> do
+                                    let tree = (sld prog suc)
+                                    putStrLn("TREE BEGINNING\n")
+                                    putStrLn(pretty tree)
+                                    putStrLn("TREE END\n")
                                     let erg = (solve stra prog suc)
                                     if ((length erg) /= 0) then solvePrint(erg) else putStrLn("No solutions.")
                                     mainloop prog stra
