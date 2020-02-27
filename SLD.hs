@@ -1,4 +1,4 @@
-module SLD where
+module SLD(sld,dfs,bfs,solve,Strategy) where
 
 import Type
 import Subst

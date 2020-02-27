@@ -1,4 +1,4 @@
-module Rename where
+module Rename(rename) where
 
 import Type
 import Vars

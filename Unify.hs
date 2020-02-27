@@ -1,4 +1,4 @@
-module Unify where
+module Unify(ds,unify) where
 
 import Type
 import Subst

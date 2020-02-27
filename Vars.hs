@@ -1,4 +1,4 @@
-module Vars where
+module Vars(allVars,freshVars,Vars()) where
 
 import Type
 import Data.List
