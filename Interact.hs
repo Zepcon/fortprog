@@ -1,7 +1,6 @@
 module Interact where
 
 import Parser
-import Data.List
 import Type
 import Pretty
 import SLD
@@ -21,7 +20,7 @@ help = "Commands available from the prompt: \n" ++
        " :s <strat>  Sets the specified search strategy where <strat> is one of 'dfs' or 'bfs'."
 
 
-
+main :: IO()
 main = do
         putStrLn("\n***************************")
         putStrLn("*" ++ (inGreen "  Flavio und Lara @2020  ") ++ "*")
@@ -38,6 +37,7 @@ mainloop prog stra = do
                                case (words input) of  -- input holen
                                 [":h"] -> do
                                  putStrLn help
+                                 mainloop prog stra
                                 [":help"] -> do
                                  putStrLn help
                                  mainloop prog stra
