@@ -1,6 +1,6 @@
 module Subst(empty, single, apply, compose, restrictTo, Subst()) where
 
-{- Subsitution: Ordnet jeder Variablen einen Term zu -}
+-- Subsitution: Ordnet jeder Variablen einen Term zu
 
 import Type
 import Pretty
@@ -22,19 +22,22 @@ single x y = Subst [(x,y)]
 -- Substitution auf Term anwenden
 apply :: Subst -> Term -> Term
 apply (Subst []) a = a  -- leere Substitution, also bleibt Term
-apply (Subst ((x,y):z)) (Var a) = if x == a then y else apply (Subst z) (Var a)  -- Anwendung gefunden oder Rekursion
-apply s (Comb a x) = Comb a (map (apply s) x)  -- Mappen von partieller Anwendung
+apply (Subst ((x,y):z)) (Var a) = if x == a then y else apply (Subst z) (Var a)  -- Substitution gefunden oder Rekursion
+apply s (Comb a x) = Comb a (map (apply s) x)  -- Substitution auf alle Comb Terme anwenden
 
 -- Komposition von Substitutionen
 compose :: Subst -> Subst -> Subst
 compose s2 (Subst []) = s2
 compose (Subst []) s1 = s1
-compose (Subst s2) (Subst s1) = memberHelp (Subst s2) (Subst (map help s1)) -- nach dem Mappen fehlende Tupel übertragen
+compose (Subst s2) (Subst s1) = memberHelp (Subst s2) (Subst (map help s1)) -- Fall für 2 Substitutionen, von welchen die Innere zuerst angewandt wird,
+                                                                              --zb compose A->B A->C wird zu A->C
  where
   help :: (VarName, Term) -> (VarName, Term)
-  help (v,t) = (v, apply (Subst s2) t) -- erst komplett s2 über s1 mappen, um Eigenschaft zu gewährleisten
+  help (v,t) = (v, apply (Subst s2) t) -- erst komplett s2 über s1 mappen, um Eigenschaft zu gewährleisten, dass s2 in s1 erfüllt ist
+                                         -- Beispiel: compose D->E F->f(D,true) wird zu F-> f(E,true), D->E
 
 -- Übertrage Tupel von einer Substitution in eine andere, falls diese fehlen sollten
+-- s2 konnte also in diesem Fall nicht schon in s1 angewendet werden
 memberHelp :: Subst -> Subst -> Subst
 memberHelp (Subst []) a = a
 memberHelp a (Subst []) = a
@@ -43,32 +46,29 @@ memberHelp (Subst ((x,y):z)) (Subst b) = if not (varMember x (Subst b))  -- Chec
                                           else (memberHelp (Subst z) (Subst b))  -- wenn schon drin, alles gucci
 
 -- Checken, ob Tupel-Variable bereits in anderer Substitution vorkommt
--- lookup Funktion verwenden
--- Maybe und Nothing verwenden
 varMember :: VarName -> Subst -> Bool
 varMember _ (Subst []) = False
 varMember a (Subst ((x,_):z)) = if a == x
                                  then True  -- gefunden!
-                                 else (varMember a (Subst z))
+                                 else (varMember a (Subst z))  --checken für restliche Substitutionen
 
 -- Substitution auf Variablen einschränken
 restrictTo :: [VarName] -> Subst -> Subst
---restrictTo [] a = a
 restrictTo x a = Subst (restrictHelp [] x a)
  where
    -- Baue die Liste für die Subst mit Akkumulator zusammen
    restrictHelp :: [(VarName,Term)] -> [VarName] -> Subst -> [(VarName,Term)]
    restrictHelp acc [] _ = acc
-   restrictHelp acc (a1:as) x1 = if (varMember a1 x1)
-                                then (restrictHelp ((giveTuple a1 x1) : acc) as x1)  -- gefunden, also gib Tupel, damit wir es dazupacken können
-                                else (restrictHelp acc as x1)
+   restrictHelp acc (a1:as) s = case (giveTuple a1 s) of
+                                  Just (var,te) -> (restrictHelp ((var,te) : acc) as s)  -- gefunden, also gib Tupel, damit wir es dazupacken können
+                                  Nothing -> (restrictHelp acc as s)  -- nicht gefunden
 
--- Wenn Variable drin, gib das Tupel zurück
-giveTuple :: VarName -> Subst -> (VarName, Term)
-giveTuple _ (Subst []) = ("Hello",Var "hello") -- mache ich noch weg
+-- Wenn Variable in Substitution drin, gib das Tupel zurück
+giveTuple :: VarName -> Subst -> Maybe (VarName, Term)
+giveTuple _ (Subst []) = Nothing  -- nicht gefunden
 giveTuple a (Subst ((x,y):z)) = if a == x
-                                 then (x,y)
-                                 else (giveTuple a (Subst z))
+                                 then Just (x,y)  -- gefunden
+                                 else (giveTuple a (Subst z))  -- vielleicht im Rest drin
 
 -- Auch Substitutionen wollen schön sein
 instance Pretty Subst where

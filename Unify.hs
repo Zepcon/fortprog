@@ -4,9 +4,7 @@ import Type
 import Subst
 import Vars
 
--- ds berechnet die Unstimmigkeitsmenge zweier Terme
--- und gibt sie als Paar zurück
--- Unstimmigkeitsmenge leer: Nothing zurückgeben
+-- ds berechnet die Unstimmigkeitsmenge zweier Terme und gibt sie als Paar zurück
 ds :: Term -> Term -> Maybe (Term, Term)
 ds (Var "_") _ = Nothing  -- anonyme Variablen können alles sein, also auch jeder Term, also Nothing
 ds _ (Var "_") = Nothing  -- same here
@@ -18,7 +16,6 @@ ds (Comb combName xs1) (Comb combName2 xs2) | length xs1 /= length xs2 = Just((C
 ds t1 t2 = Just(t1,t2)  -- letzte Möglichkeit entspricht ds
 
 -- checke für Termlisten, ob diese ds bilden könnten
--- zipwith, find, msum
 dsHelp :: [Term] -> [Term] -> Maybe (Term, Term)
 dsHelp _ [] = Nothing
 dsHelp [] _ = Nothing
@@ -41,12 +38,12 @@ unifyHelp sigma t1 t2 = case (ds (apply sigma t1) (apply sigma t2)) of  -- bilde
                                            else Nothing  -- occur check erfolgreich, also Fail
                          Just(t, Var v) -> if not (occur (Var v) t) -- gleicher Fall nochmal für andere Reihenfolge
                                            then unifyHelp (compose((single v t)) sigma) t1 t2  -- Rekursion auf erweiterte Substitution
-                                           else Nothing
+                                           else Nothing  -- occur check wieder erfolgreich
                          Just(_,_) -> Nothing  -- beides Terme, also fail
 
 -- checke, ob eine Variable in einem Term vorkommt
 occur :: Term -> Term -> Bool
-occur (Var a) (Comb _ x) =  (elem a (allVars x))  -- deswegen Ergänzung in Vars gemacht
+occur (Var a) x =  (elem a (allVars x))  -- deswegen Ergänzung in Vars gemacht
 occur _ _ = False -- wir wollen nur Variable in Term wissen, deswegen Alternativen egal, also false
 
 

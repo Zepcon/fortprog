@@ -5,7 +5,6 @@ import Type
 import Pretty
 import SLD
 import Subst
-import Vars
 
 
 -- Wichtig
@@ -28,7 +27,7 @@ main = do
         putStrLn( "***************************")
         putStrLn(inGreen "Welcome to interactive Prolog!\n")
         putStrLn("Type \":h\" for help.")
-        mainloop (Prog []) dfs
+        mainloop (Prog []) dfs  -- initial starten wir mit Tiefensuche
 
 
 mainloop :: Prog -> Strategy -> IO ()
@@ -73,7 +72,7 @@ mainloop prog stra = do
                                   let y = parse input :: Either String Goal
                                   case y of
                                    (Left err) -> do
-                                    putStrLn "Wrong input!"
+                                    putStrLn err
                                     mainloop prog stra
                                    (Right suc) -> do
                                     let erg = (solve stra prog suc)
