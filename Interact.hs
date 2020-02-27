@@ -77,7 +77,7 @@ mainloop prog stra = do
                                     mainloop prog stra
                                    (Right suc) -> do
                                     let erg = (solve stra prog suc)
-                                    if ((length erg) /= 0) then solvePrint(erg) else putStrLn("No solutions.")
+                                    if (not (null erg)) then solvePrint(erg) else putStrLn("No solutions.")
                                     mainloop prog stra
 
 
