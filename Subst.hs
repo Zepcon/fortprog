@@ -53,7 +53,7 @@ varMember a (Subst ((x,_):z)) = if a == x
 
 -- Substitution auf Variablen einschränken
 restrictTo :: [VarName] -> Subst -> Subst
-restrictTo [] a = a
+--restrictTo [] a = a
 restrictTo x a = Subst (restrictHelp [] x a)
  where
    -- Baue die Liste für die Subst mit Akkumulator zusammen

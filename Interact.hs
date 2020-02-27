@@ -5,6 +5,7 @@ import Type
 import Pretty
 import SLD
 import Subst
+import Vars
 
 
 -- Wichtig
@@ -27,7 +28,7 @@ main = do
         putStrLn( "***************************")
         putStrLn(inGreen "Welcome to interactive Prolog!\n")
         putStrLn("Type \":h\" for help.")
-        mainloop (Prog []) bfs
+        mainloop (Prog []) dfs
 
 
 mainloop :: Prog -> Strategy -> IO ()
