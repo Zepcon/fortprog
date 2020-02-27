@@ -2,10 +2,12 @@ module Testing where
 
 import Type
 import SLD
-import Pretty -- Warning, wenn Aufruf ohne pretty
+import Pretty
 
+psldt :: IO()
+psldt = putStrLn (pretty sldt)
 
-sldt :: SLDTree
+sldt :: SLD.SLDTree
 sldt = sld pro go
 
 pro :: Prog
